@@ -1,10 +1,13 @@
 <script setup>
 import iconPatch from './assets/icon.png';
-import plusIcon from './assets/plus.webp';
+// import plusIcon from './assets/plus.webp';
 import { ref } from 'vue';
+import Card from './components/Card.vue';
+console.log(Card);
 
-const data = ref({
-  tiles: [
+const data = ref([{
+  type: 'tile',
+  content: [
     {
       link: 'https://lalala1.ru',
       icon: iconPatch
@@ -14,7 +17,10 @@ const data = ref({
       icon: iconPatch
     }
   ],
-  rows: [
+},
+{
+  type: 'row',
+  content: [
     {
       link: 'https://lalala2.ru',
       icon: iconPatch
@@ -24,7 +30,10 @@ const data = ref({
       icon: iconPatch
     }
   ],
-  favorites: [
+},
+{
+  type: 'favorite',
+  content: [
     {
       link: 'https://lalala10.ru',
       icon: iconPatch
@@ -34,19 +43,23 @@ const data = ref({
       icon: iconPatch
     }
   ],
-});
+}
+]);
 const popinOpened = ref(false);
-const addingType = ref('');
+// const addingType = ref('');
 const inputValue = ref('');
+const currentIndex = ref(0);
 
-const openPopin = (type) => {
+const openPopin = (index) => {
   popinOpened.value = true;
-  addingType.value = type;
+  // addingType.value = type;
+  console.log(index);
+  currentIndex.value = index;
 }
 
 const onPopinButtonClick = () => {
   if (inputValue.value.length > 0) {
-    data.value[addingType.value].push({
+    data.value[currentIndex.value].content.push({
       link: inputValue.value,
       icon: iconPatch
     });
@@ -59,7 +72,7 @@ const onPopinButtonClick = () => {
 <template>
   <div class="wrapper">
     <div class="container">
-      <div class="card">
+      <!-- <div class="card">
         <div class="title">Tiles-example</div>
         <div class="cardContent">
           <div v-for="item in data.tiles" :key="item.link" class="tile">
@@ -69,9 +82,11 @@ const onPopinButtonClick = () => {
             <img :src="plusIcon" alt="">
           </div>
         </div>
-      </div>
+      </div> -->
 
-      <div class="card">
+      <Card v-for="(item, index) in data" :key="index" :type="item.type" :index="index" :title="item.title"
+        :content="item.content" @addLink="openPopin(index)" />
+      <!-- <div class="card">
         <div class="title">Rows-example</div>
         <div v-for="item in data.rows" :key="item.link" class="row">
           {{ item.link }}
@@ -79,9 +94,9 @@ const onPopinButtonClick = () => {
         <div class="row plus" @click="openPopin('rows')">
           <img :src="plusIcon" alt="">
         </div>
-      </div>
+      </div> -->
 
-      <div class="card">
+      <!-- <div class="card">
         <div class="title">Favorites-example</div>
         <div v-for="item in data.favorites" :key="item.link" class="favorite">
           {{ item.link }}
@@ -89,7 +104,7 @@ const onPopinButtonClick = () => {
         <div class="row plus" @click="openPopin('favorites')">
           <img :src="plusIcon" alt="">
         </div>
-      </div>
+      </div> -->
 
     </div>
     <div v-if="popinOpened" class="popin">
@@ -99,7 +114,7 @@ const onPopinButtonClick = () => {
   </div>
 </template>
 
-<style scoped>
+<style>
 .wrapper {
   position: relative;
 }
