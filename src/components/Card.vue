@@ -1,5 +1,4 @@
 <script setup>
-import { ref } from 'vue';
 import plusIcon from '../assets/plus.svg';
 
 const props = defineProps({
@@ -23,7 +22,6 @@ const inputTitle = (event) => {
 </script>
 <template>
     <div class="card">
-        <!-- <div class="title">{{ title }}</div> -->
         <input type="text" class="titleInput" :value="title" @input="inputTitle">
         <div class="cardContent">
             <div v-for="item in props.content" :key="item.link" :class="props.type">

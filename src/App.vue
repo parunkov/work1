@@ -85,7 +85,7 @@ const changeCardTitle = (payload) => {
 
       <Card v-for="(item, index) in data" :key="index" :type="item.type" :index="index" :title="item.title"
         :content="item.content" @addLink="openPopin(index)" @cangeTitle="changeCardTitle" />
-      <button class="selectButton" @click="selectPopinOpened = true">
+      <button class="selectButton" @click="selectPopinOpened = true; popinOpened = false;">
         <img :src="plusIconWhite" alt="">
       </button>
 
