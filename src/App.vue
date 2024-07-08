@@ -1,12 +1,12 @@
 <script setup>
 import iconPatch from './assets/icon.png';
-// import plusIcon from './assets/plus.webp';
 import { ref } from 'vue';
 import Card from './components/Card.vue';
-console.log(Card);
+import plusIconWhite from './assets/plusWhite.svg';
 
 const data = ref([{
   type: 'tile',
+  title: '',
   content: [
     {
       link: 'https://lalala1.ru',
@@ -20,6 +20,7 @@ const data = ref([{
 },
 {
   type: 'row',
+  title: '',
   content: [
     {
       link: 'https://lalala2.ru',
@@ -33,6 +34,7 @@ const data = ref([{
 },
 {
   type: 'favorite',
+  title: '',
   content: [
     {
       link: 'https://lalala10.ru',
@@ -46,14 +48,13 @@ const data = ref([{
 }
 ]);
 const popinOpened = ref(false);
-// const addingType = ref('');
+const selectPopinOpened = ref(false);
 const inputValue = ref('');
 const currentIndex = ref(0);
 
 const openPopin = (index) => {
+  selectPopinOpened.value = false;
   popinOpened.value = true;
-  // addingType.value = type;
-  console.log(index);
   currentIndex.value = index;
 }
 
@@ -67,49 +68,36 @@ const onPopinButtonClick = () => {
   inputValue.value = '';
   popinOpened.value = false;
 }
+
+const onSelectButtonClick = (type) => {
+  data.value.push({ type, content: [] });
+  selectPopinOpened.value = false;
+}
+
+const changeCardTitle = (payload) => {
+  data.value[payload.index].title = payload.title;
+}
 </script>
 
 <template>
   <div class="wrapper">
     <div class="container">
-      <!-- <div class="card">
-        <div class="title">Tiles-example</div>
-        <div class="cardContent">
-          <div v-for="item in data.tiles" :key="item.link" class="tile">
-            <img :src="item.icon" alt="">
-          </div>
-          <div class="tile plus" @click="openPopin('tiles')">
-            <img :src="plusIcon" alt="">
-          </div>
-        </div>
-      </div> -->
 
       <Card v-for="(item, index) in data" :key="index" :type="item.type" :index="index" :title="item.title"
-        :content="item.content" @addLink="openPopin(index)" />
-      <!-- <div class="card">
-        <div class="title">Rows-example</div>
-        <div v-for="item in data.rows" :key="item.link" class="row">
-          {{ item.link }}
-        </div>
-        <div class="row plus" @click="openPopin('rows')">
-          <img :src="plusIcon" alt="">
-        </div>
-      </div> -->
-
-      <!-- <div class="card">
-        <div class="title">Favorites-example</div>
-        <div v-for="item in data.favorites" :key="item.link" class="favorite">
-          {{ item.link }}
-        </div>
-        <div class="row plus" @click="openPopin('favorites')">
-          <img :src="plusIcon" alt="">
-        </div>
-      </div> -->
+        :content="item.content" @addLink="openPopin(index)" @cangeTitle="changeCardTitle" />
+      <button class="selectButton" @click="selectPopinOpened = true">
+        <img :src="plusIconWhite" alt="">
+      </button>
 
     </div>
     <div v-if="popinOpened" class="popin">
       <input type="text" v-model="inputValue" class="popinInput">
       <button class="popinButton" @click="onPopinButtonClick">Add</button>
+    </div>
+    <div v-if="selectPopinOpened" class="popin">
+      <button class="popinButton select" @click="onSelectButtonClick('tile')">Tile</button>
+      <button class="popinButton select" @click="onSelectButtonClick('row')">Row</button>
+      <button class="popinButton select" @click="onSelectButtonClick('favorite')">Faworite</button>
     </div>
   </div>
 </template>
@@ -117,6 +105,7 @@ const onPopinButtonClick = () => {
 <style>
 .wrapper {
   position: relative;
+
 }
 
 .container {
@@ -124,6 +113,8 @@ const onPopinButtonClick = () => {
   padding-left: 1vw;
   padding-right: 1vw;
   display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
   gap: 1vw;
 }
 
@@ -164,7 +155,7 @@ const onPopinButtonClick = () => {
 }
 
 .row {
-  width: calc(100% - 24px);
+  width: 100%;
   border-radius: 10px;
   background: #D9D9D9;
   padding: 3.5px 10px;
@@ -180,7 +171,7 @@ const onPopinButtonClick = () => {
 }
 
 .favorite {
-  width: calc(100% - 24px);
+  width: 100%;
   border-radius: 10px;
   background: #282828;
   padding: 3.5px 10px;
@@ -222,5 +213,29 @@ const onPopinButtonClick = () => {
   color: #282828;
   border: none;
   outline: none;
+
+  &.select {
+    text-align: center;
+    width: 100%;
+    min-width: 120px;
+    cursor: pointer;
+  }
+}
+
+.selectButton {
+  display: block;
+  width: 32vw;
+  height: 37px;
+  cursor: pointer;
+  border-radius: 20px;
+  background: #282828;
+  border: none;
+  outline: none;
+
+  img {
+    display: block;
+    width: 20px;
+    margin: auto;
+  }
 }
 </style>
