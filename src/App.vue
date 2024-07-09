@@ -1,6 +1,6 @@
 <script setup>
+import { ref, watch } from 'vue';
 import iconPatch from './assets/icon.png';
-import { ref } from 'vue';
 import Card from './components/Card.vue';
 import plusIconWhite from './assets/plusWhite.svg';
 
@@ -47,16 +47,25 @@ const data = ref([{
   ],
 }
 ]);
+
 const popinOpened = ref(false);
 const selectPopinOpened = ref(false);
 const inputValue = ref('');
 const currentIndex = ref(0);
+const addInput = ref(null);
 
 const openPopin = (index) => {
   selectPopinOpened.value = false;
   popinOpened.value = true;
   currentIndex.value = index;
 }
+watch(popinOpened, (value) => {
+  setTimeout(() => {
+    if (value && addInput.value) {
+      addInput.value.focus();
+    }
+  }, 100);
+});
 
 const onPopinButtonClick = () => {
   if (inputValue.value.length > 0) {
@@ -85,13 +94,13 @@ const changeCardTitle = (payload) => {
 
       <Card v-for="(item, index) in data" :key="index" :type="item.type" :index="index" :title="item.title"
         :content="item.content" @addLink="openPopin(index)" @cangeTitle="changeCardTitle" />
-      <button class="selectButton" @click="selectPopinOpened = true; popinOpened = false;">
+      <button class="selectButton" @click="selectPopinOpened = true; popinOpened = false;" style="--span: 3">
         <img :src="plusIconWhite" alt="">
       </button>
 
     </div>
     <div v-if="popinOpened" class="popin">
-      <input type="text" v-model="inputValue" class="popinInput">
+      <input type="text" v-model="inputValue" class="popinInput" ref="addInput">
       <button class="popinButton" @click="onPopinButtonClick">Add</button>
     </div>
     <div v-if="selectPopinOpened" class="popin">
@@ -106,42 +115,61 @@ const changeCardTitle = (payload) => {
 .wrapper {
   position: relative;
 
+  * {
+    font-size: 0.83vw;
+    line-height: 1.04vw;
+
+    @media screen and (max-width: 1023px) {
+      font-size: 3.2vw;
+      line-height: 4vw;
+    }
+  }
 }
 
 .container {
   padding-top: 1.4vw;
   padding-left: 1vw;
   padding-right: 1vw;
+  margin-bottom: 1.4vw;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  /* display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start; */
   gap: 1vw;
   grid-auto-rows: 1px;
   grid-auto-flow: dense;
+
+  @media screen and (max-width: 1023px) {
+    display: block;
+  }
 }
 
 .card {
-  width: 32vw;
   padding-top: 0.56vw;
   padding-left: 0.84vw;
   padding-right: 0.84vw;
-  /* padding-bottom: 13px; */
   border-radius: 1.4vw;
   background: #282828;
   grid-row-end: span var(--span, 1);
+
+  @media screen and (max-width: 1023px) {
+    padding-bottom: 0.56vw;
+    margin-bottom: 1vw;
+  }
 }
 
 .cardContent {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
   gap: 0.35vw;
+
+  @media screen and (max-width: 1023px) {
+    gap: 1vw;
+  }
+}
+
+.cardContent_type_tile {
+  grid-template-columns: repeat(8, 1fr);
 }
 
 .tile {
-  width: 3.473vw;
-  height: 3.473vw;
   border-radius: 0.7vw;
   background: #D9D9D9;
   padding: 0.7vw;
@@ -154,8 +182,6 @@ const changeCardTitle = (payload) => {
 }
 
 .title {
-  font-size: 0.83vw;
-  line-height: 1.04vw;
   margin-bottom: 0.7vw;
 }
 
@@ -165,13 +191,16 @@ const changeCardTitle = (payload) => {
   background: #D9D9D9;
   padding: 0.24vw 0.7vw;
   margin-bottom: 0.34vw;
-  font-size: 0.83vw;
   color: #282828;
 
   img {
     display: block;
-    width: 1.4vw;
+    width: 1.1vw;
     margin: auto;
+
+    @media screen and (max-width: 1023px) {
+      width: 4vw;
+    }
   }
 }
 
@@ -181,7 +210,6 @@ const changeCardTitle = (payload) => {
   background: #282828;
   padding: 0.24vw 0.7vw;
   margin-bottom: 0.34vw;
-  font-size: 0.83vw;
   color: #ffffff;
 }
 
@@ -196,12 +224,11 @@ const changeCardTitle = (payload) => {
 }
 
 .popinInput {
-  width: 500px;
+  width: 34.7vw;
   border-radius: 0.7vw;
   background: #D9D9D9;
   padding: 0.24vw 0.7vw;
   margin-bottom: 0.34vw;
-  font-size: 0.83vw;
   color: #282828;
   border: none;
   outline: none;
@@ -214,7 +241,6 @@ const changeCardTitle = (payload) => {
   background: #D9D9D9;
   padding: 0.24vw 0.7vw;
   margin-bottom: 0.34vw;
-  font-size: 0.83vw;
   color: #282828;
   border: none;
   outline: none;
@@ -229,18 +255,25 @@ const changeCardTitle = (payload) => {
 
 .selectButton {
   display: block;
-  width: 32vw;
-  height: 2.57vw;
   cursor: pointer;
   border-radius: 1.4vw;
   background: #282828;
   border: none;
   outline: none;
+  grid-row-end: span var(--span, 1);
+
+  @media screen and (max-width: 1023px) {
+    width: 100%;
+  }
 
   img {
     display: block;
     width: 1.4vw;
     margin: auto;
+
+    @media screen and (max-width: 1023px) {
+      width: 4vw;
+    }
   }
 }
 </style>
