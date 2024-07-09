@@ -109,37 +109,42 @@ const changeCardTitle = (payload) => {
 }
 
 .container {
-  padding-top: 20px;
+  padding-top: 1.4vw;
   padding-left: 1vw;
   padding-right: 1vw;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  /* display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: flex-start; */
   gap: 1vw;
+  grid-auto-rows: 1px;
+  grid-auto-flow: dense;
 }
 
 .card {
   width: 32vw;
-  padding-top: 8px;
-  padding-left: 12px;
-  padding-right: 12px;
-  padding-bottom: 13px;
-  border-radius: 20px;
+  padding-top: 0.56vw;
+  padding-left: 0.84vw;
+  padding-right: 0.84vw;
+  /* padding-bottom: 13px; */
+  border-radius: 1.4vw;
   background: #282828;
+  grid-row-end: span var(--span, 1);
 }
 
 .cardContent {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 0.35vw;
 }
 
 .tile {
-  width: 50px;
-  height: 50px;
-  border-radius: 10px;
+  width: 3.473vw;
+  height: 3.473vw;
+  border-radius: 0.7vw;
   background: #D9D9D9;
-  padding: 10px;
+  padding: 0.7vw;
 
   img {
     display: block;
@@ -149,34 +154,34 @@ const changeCardTitle = (payload) => {
 }
 
 .title {
-  font-size: 12px;
-  line-height: 15px;
-  margin-bottom: 10px;
+  font-size: 0.83vw;
+  line-height: 1.04vw;
+  margin-bottom: 0.7vw;
 }
 
 .row {
   width: 100%;
-  border-radius: 10px;
+  border-radius: 0.7vw;
   background: #D9D9D9;
-  padding: 3.5px 10px;
-  margin-bottom: 5px;
-  font-size: 12px;
+  padding: 0.24vw 0.7vw;
+  margin-bottom: 0.34vw;
+  font-size: 0.83vw;
   color: #282828;
 
   img {
     display: block;
-    width: 20px;
+    width: 1.4vw;
     margin: auto;
   }
 }
 
 .favorite {
   width: 100%;
-  border-radius: 10px;
+  border-radius: 0.7vw;
   background: #282828;
-  padding: 3.5px 10px;
-  margin-bottom: 5px;
-  font-size: 12px;
+  padding: 0.24vw 0.7vw;
+  margin-bottom: 0.34vw;
+  font-size: 0.83vw;
   color: #ffffff;
 }
 
@@ -184,19 +189,19 @@ const changeCardTitle = (payload) => {
   position: fixed;
   top: 50%;
   left: 50%;
-  padding: 20px;
+  padding: 1.4vw;
   transform: translate(-50%, -50%);
-  border-radius: 20px;
+  border-radius: 1.4vw;
   background: #282828;
 }
 
 .popinInput {
   width: 500px;
-  border-radius: 10px;
+  border-radius: 0.7vw;
   background: #D9D9D9;
-  padding: 3.5px 10px;
-  margin-bottom: 5px;
-  font-size: 12px;
+  padding: 0.24vw 0.7vw;
+  margin-bottom: 0.34vw;
+  font-size: 0.83vw;
   color: #282828;
   border: none;
   outline: none;
@@ -204,12 +209,12 @@ const changeCardTitle = (payload) => {
 
 .popinButton {
   display: block;
-  margin-top: 10px;
-  border-radius: 10px;
+  margin-top: 0.7vw;
+  border-radius: 0.7vw;
   background: #D9D9D9;
-  padding: 3.5px 10px;
-  margin-bottom: 5px;
-  font-size: 12px;
+  padding: 0.24vw 0.7vw;
+  margin-bottom: 0.34vw;
+  font-size: 0.83vw;
   color: #282828;
   border: none;
   outline: none;
@@ -217,7 +222,7 @@ const changeCardTitle = (payload) => {
   &.select {
     text-align: center;
     width: 100%;
-    min-width: 120px;
+    min-width: 8.4vw;
     cursor: pointer;
   }
 }
@@ -225,16 +230,16 @@ const changeCardTitle = (payload) => {
 .selectButton {
   display: block;
   width: 32vw;
-  height: 37px;
+  height: 2.57vw;
   cursor: pointer;
-  border-radius: 20px;
+  border-radius: 1.4vw;
   background: #282828;
   border: none;
   outline: none;
 
   img {
     display: block;
-    width: 20px;
+    width: 1.4vw;
     margin: auto;
   }
 }

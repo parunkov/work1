@@ -21,7 +21,7 @@ const inputTitle = (event) => {
 }
 </script>
 <template>
-    <div class="card">
+    <div class="card" :style="`--span: 10;`">
         <input type="text" class="titleInput" :value="title" @input="inputTitle">
         <div class="cardContent">
             <div v-for="item in props.content" :key="item.link" :class="props.type">
@@ -40,10 +40,10 @@ const inputTitle = (event) => {
 .titleInput {
     display: block;
     width: 100%;
-    font-size: 12px;
-    line-height: 15px;
-    margin-bottom: 10px;
-    border-radius: 10px;
+    font-size: 0.83vw;
+    line-height: 1.04vw;
+    margin-bottom: 0.7vw;
+    border-radius: 0.7vw;
     border: none;
     outline: none;
     background: #282828;
