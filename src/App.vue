@@ -3,70 +3,24 @@ import { ref, watch } from 'vue';
 import Card from './components/Card.vue';
 import plusIconWhite from './assets/plusWhite.svg';
 
-// const data = ref(
-//   [
-//     {
-//       "type": "tiles",
-//       "name": "Tiles-example",
-//       "content": [
-//         {
-//           "link": "https://lalala.ru",
-//           "icon": "/icons/3.jpg"
-//         },
-//         {
-//           "link": "https://lalala.ru",
-//           "icon": "/icons/2.jpg"
-//         }
-//       ]
-//     },
-//     {
-//       "type": "favorites",
-//       "content": [
-//         {
-//           "folderName": "folder1",
-//           "folderContent": [
-//             {
-//               "link": "https://lalala.ru",
-//               "icon": "/icons/4.jpg"
-//             },
-//             {
-//               "link": "https://lalala.ru",
-//               "icon": "/icons/5.jpg"
-//             }
-//           ]
-//         },
-//         {
-//           "link": "https://lalala.ru",
-//           "icon": "/icons/4.jpg"
-//         },
-//         {
-//           "link": "https://lalala.ru",
-//           "icon": "/icons/5.jpg"
-//         }
-//       ]
-//     },
-//     {
-//       "type": "rows",
-//       "name": "Rows-example",
-//       "content": [
-//         "https://lalala.ru",
-//         "https://lalala2.ru"
-//       ]
-//     }
-//   ]
-// )
-
-const data = ref([]);
+const data = ref(localStorage.getItem('p1159data') ? JSON.parse(localStorage.getItem('p1159data')) : []);
 const popinOpened = ref(false);
 const selectPopinOpened = ref(false);
 const inputValue = ref('');
 const currentIndex = ref(0);
 const addInput = ref(null);
 
+// localStorage.removeItem('p1159data');
+
+const updateStorage = () => {
+  localStorage.setItem('p1159data', JSON.stringify(data.value));
+}
+
 fetch('https://mockapi.pasha.design/startpage/1/')
   .then(response => response.json())
   .then(result => {
     data.value = result;
+    // updateStorage();
   });
 
 const openPopin = (index) => {
@@ -104,8 +58,14 @@ const onSelectButtonClick = (type) => {
   selectPopinOpened.value = false;
 }
 
+let timeoutId;
 const changeCardTitle = (payload) => {
   data.value[payload.index].name = payload.name;
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(() => {
+    console.log(2222);
+    updateStorage();
+  }, 500);
 }
 </script>
 
