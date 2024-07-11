@@ -41,7 +41,7 @@ const loadData = () => {
     ? +localStorage.getItem('p1159loadingDate')
     : 0;
   console.log('update diff - ', Date.now() - loadingDate);
-  if (Date.now() - loadingDate > 3600) {
+  if (Date.now() - loadingDate > 3600000) {
     fetch('https://mockapi.pasha.design/startpage/1/')
       .then((response) => response.json())
       .then((result) => {
@@ -127,6 +127,8 @@ const onDrop = (index) => {
     data.value.splice(draggedIndex.value, 1);
     data.value.splice(index, 0, draggedItem);
     draggedIndex.value = null;
+    updateStorage();
+  // sendData();
 };
 </script>
 
