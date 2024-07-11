@@ -1,10 +1,8 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { onMounted, onUpdated, ref, watch } from 'vue';
 import plusIcon from '../assets/plus.svg';
 import rightIcon from '../assets/triangle-right.svg';
 import downIcon from '../assets/triangle-down.svg';
-
-const icons = import.meta.glob('../assets/icons/*.jpg', { eager: true });
 
 const props = defineProps({
     type: { type: String, required: true, },
@@ -13,7 +11,7 @@ const props = defineProps({
     content: { type: Array, required: true, }
 });
 
-const emit = defineEmits(['addLink', 'cangeTitle']);
+const emit = defineEmits(['addLink', 'cangeTitle', 'folderClick']);
 
 const setSpanHeight = (content) => {
     const columnsValue = props.type === 'tiles' ? 8 : 1;
@@ -28,8 +26,19 @@ watch(props.content, (content) => {
     spanHeight.value = setSpanHeight(content);
 })
 
+onMounted(() => {
+    spanHeight.value = setSpanHeight(props.content);
+});
+
+onUpdated(() => {
+    spanHeight.value = setSpanHeight(props.content);
+});
+
 const emitAddLink = () => {
     emit('addLink', props.index);
+    setTimeout(() => {
+        spanHeight.value = setSpanHeight(props.content);
+    }, 100);
 }
 
 if (!props.name) emit('cangeTitle', { index: props.index, name: `Card ${props.index + 1} (type ${props.type})` });
@@ -38,18 +47,30 @@ const inputTitle = (event) => {
     const payload = { index: props.index, name: event.target.value };
     emit('cangeTitle', payload);
 }
+
+const onFolderClick = (event) => {
+    const folderIndex = event.target.closest('.favoriteFolder')?.dataset?.folderIndex;
+    const visiblity = props.content[folderIndex].visible;
+    const payload = { index: props.index, folderIndex, visiblity };
+    emit('folderClick', payload);
+    setTimeout(() => {
+        spanHeight.value = setSpanHeight(props.content);
+    }, 100);
+}
 </script>
 <template>
     <div class="card" :style="`--span: ${spanHeight};`">
         <input type="text" class="titleInput" :value="name" @input="inputTitle">
+
         <div v-if="props.type === 'tiles'" class="cardContent cardContent_type_tile">
             <div v-for="item in props.content" :key="item.link" class="tile">
-                <img :src="icons[`../assets${item.icon}`].default">
+                <img :src="`https://mockapi.pasha.design/startpage${item.icon}`">
             </div>
             <div class="plus tile" @click="emitAddLink">
                 <img :src="plusIcon" alt="">
             </div>
         </div>
+
         <div v-if="props.type === 'rows'" class="cardContent cardContent_type_row">
             <div v-for="item in props.content" :key="item.link" class="row">
                 <div>
@@ -60,22 +81,22 @@ const inputTitle = (event) => {
                 <img :src="plusIcon" alt="">
             </div>
         </div>
+
         <div v-if="props.type === 'favorites'" class="cardContent cardContent_type_row">
-            <div v-for="item in props.content" :key="item.link">
-                <div v-if="item.folderName" class="favoriteFolder">
-                    <div v-if="item.folderName" class="favorite favoriteFolderTitle"
-                        @click="item.visible = !item.visible">
+            <div v-for="(item, folderIndex) in props.content" :key="item.link">
+                <div v-if="item.folderName" class="favoriteFolder" :data-folder-index="folderIndex">
+                    <div v-if="item.folderName" class="favorite favoriteFolderTitle" @click="onFolderClick">
                         <img :src="item.visible ? downIcon : rightIcon">
                         {{ item.folderName }}
                     </div>
                     <div v-if="item.visible" v-for="itemLink in item.folderContent"
                         class="favorite favorite_folder_item">
-                        <img :src="icons[`../assets${itemLink.icon}`].default">
+                        <img :src="`https://mockapi.pasha.design/startpage${itemLink.icon}`">
                         {{ itemLink.link }}
                     </div>
                 </div>
                 <div v-else class="favorite">
-                    <img :src="icons[`../assets${item.icon}`].default">
+                    <img :src="`https://mockapi.pasha.design/startpage${item.icon}`">
                     {{ item.link }}
                 </div>
             </div>

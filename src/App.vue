@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue';
 import Card from './components/Card.vue';
 import plusIconWhite from './assets/plusWhite.svg';
+import DraggableList from './components/DraggableList.vue';
 
 const data = ref(localStorage.getItem('p1159data') ? JSON.parse(localStorage.getItem('p1159data')) : []);
 const popinOpened = ref(false);
@@ -14,14 +15,38 @@ const addInput = ref(null);
 
 const updateStorage = () => {
   localStorage.setItem('p1159data', JSON.stringify(data.value));
-}
+};
 
-fetch('https://mockapi.pasha.design/startpage/1/')
-  .then(response => response.json())
-  .then(result => {
-    data.value = result;
-    // updateStorage();
-  });
+const sendData = () => {
+  fetch('https://mockapi.pasha.design/startpage/1/update/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data.value)
+  })
+    .then(response => {
+      // console.log(response);
+    });
+  // .then(result => {
+  //   console.log(result);
+  // });
+};
+
+const loadData = () => {
+  const loadingDate = localStorage.getItem('p1159loadingDate') ? +localStorage.getItem('p1159loadingDate') : 0;
+  console.log('update diff - ', Date.now() - loadingDate);
+  if (Date.now() - loadingDate > 3600) {
+    fetch('https://mockapi.pasha.design/startpage/1/')
+      .then(response => response.json())
+      .then(result => {
+        data.value = result;
+        updateStorage();
+      });
+    localStorage.setItem('p1159loadingDate', Date.now());
+  }
+};
+loadData();
 
 const openPopin = (index) => {
   selectPopinOpened.value = false;
@@ -39,7 +64,6 @@ watch(popinOpened, (value) => {
 
 const onPopinButtonClick = () => {
   if (inputValue.value.length > 0) {
-    console.log(data.value[currentIndex.value]);
     if (data.value[currentIndex.value].type === 'rows') {
       data.value[currentIndex.value].content.push(inputValue.value);
     } else {
@@ -51,11 +75,15 @@ const onPopinButtonClick = () => {
   }
   inputValue.value = '';
   popinOpened.value = false;
+  updateStorage();
+  // sendData();
 }
 
 const onSelectButtonClick = (type) => {
   data.value.push({ type, content: [] });
   selectPopinOpened.value = false;
+  updateStorage();
+  // sendData();
 }
 
 let timeoutId;
@@ -63,9 +91,15 @@ const changeCardTitle = (payload) => {
   data.value[payload.index].name = payload.name;
   clearTimeout(timeoutId);
   timeoutId = setTimeout(() => {
-    console.log(2222);
     updateStorage();
+    // sendData();
   }, 500);
+}
+
+const onFolderClick = (payload) => {
+  data.value[payload.index].content[payload.folderIndex].visible = !payload.visiblity;
+  updateStorage();
+  // sendData();
 }
 </script>
 
@@ -74,7 +108,8 @@ const changeCardTitle = (payload) => {
     <div class="container">
 
       <Card v-for="(item, index) in data" :key="index" :type="item.type" :index="index" :name="item.name"
-        :content="item.content" @addLink="openPopin(index)" @cangeTitle="changeCardTitle" />
+        :content="item.content" @addLink="openPopin(index)" @cangeTitle="changeCardTitle"
+        @folderClick="onFolderClick" />
       <button class="selectButton" @click="selectPopinOpened = true; popinOpened = false;" style="--span: 3">
         <img :src="plusIconWhite" alt="">
       </button>
@@ -90,6 +125,7 @@ const changeCardTitle = (payload) => {
       <button class="popinButton select" @click="onSelectButtonClick('favorites')">Faworite</button>
     </div>
   </div>
+  <DraggableList />
 </template>
 
 <style>
