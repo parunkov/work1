@@ -8,7 +8,7 @@ const icons = import.meta.glob('../assets/icons/*.jpg', { eager: true });
 
 const props = defineProps({
     type: { type: String, required: true, },
-    title: { type: String, required: true },
+    name: { type: String },
     index: { type: Number, required: true, },
     content: { type: Array, required: true, }
 });
@@ -19,7 +19,6 @@ const setSpanHeight = (content) => {
     const columnsValue = props.type === 'tiles' ? 8 : 1;
     const rowHeight = props.type === 'tiles' ? 3.6 : 2.06;
     const contentValue = props.content.reduce((summ, item) => summ + (props.type === 'favorites' && item.folderContent && item.visible ? item.folderContent.length + 1 : 1), 1);
-    console.log(contentValue);
     const rowsValue = Math.ceil(contentValue / columnsValue);
     return Math.ceil(rowsValue * rowHeight + 3);
 };
@@ -33,16 +32,16 @@ const emitAddLink = () => {
     emit('addLink', props.index);
 }
 
-emit('cangeTitle', { index: props.index, title: `Card ${props.index + 1} (type ${props.type})` });
+if (!props.name) emit('cangeTitle', { index: props.index, name: `Card ${props.index + 1} (type ${props.type})` });
 
 const inputTitle = (event) => {
-    const payload = { index: props.index, title: event.target.value };
+    const payload = { index: props.index, name: event.target.value };
     emit('cangeTitle', payload);
 }
 </script>
 <template>
     <div class="card" :style="`--span: ${spanHeight};`">
-        <input type="text" class="titleInput" :value="title" @input="inputTitle">
+        <input type="text" class="titleInput" :value="name" @input="inputTitle">
         <div v-if="props.type === 'tiles'" class="cardContent cardContent_type_tile">
             <div v-for="item in props.content" :key="item.link" class="tile">
                 <img :src="icons[`../assets${item.icon}`].default">
