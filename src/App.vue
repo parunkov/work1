@@ -4,49 +4,58 @@ import iconPatch from './assets/icon.png';
 import Card from './components/Card.vue';
 import plusIconWhite from './assets/plusWhite.svg';
 
-const data = ref([{
-  type: 'tile',
-  title: '',
-  content: [
+const data = ref(
+  [
     {
-      link: 'https://lalala1.ru',
-      icon: iconPatch
+      "type": "tiles",
+      "name": "Tiles-example",
+      "content": [
+        {
+          "link": "https://lalala.ru",
+          "icon": "/icons/3.jpg"
+        },
+        {
+          "link": "https://lalala.ru",
+          "icon": "/icons/2.jpg"
+        }
+      ]
     },
     {
-      link: 'https://lalala155.ru',
-      icon: iconPatch
-    }
-  ],
-},
-{
-  type: 'row',
-  title: '',
-  content: [
-    {
-      link: 'https://lalala2.ru',
-      icon: iconPatch
+      "type": "favorites",
+      "content": [
+        {
+          "folderName": "folder1",
+          "folderContent": [
+            {
+              "link": "https://lalala.ru",
+              "icon": "/icons/4.jpg"
+            },
+            {
+              "link": "https://lalala.ru",
+              "icon": "/icons/5.jpg"
+            }
+          ]
+        },
+        {
+          "link": "https://lalala.ru",
+          "icon": "/icons/4.jpg"
+        },
+        {
+          "link": "https://lalala.ru",
+          "icon": "/icons/5.jpg"
+        }
+      ]
     },
     {
-      link: 'https://lalala3.ru',
-      icon: iconPatch
+      "type": "rows",
+      "name": "Rows-example",
+      "content": [
+        "https://lalala.ru",
+        "https://lalala2.ru"
+      ]
     }
-  ],
-},
-{
-  type: 'favorite',
-  title: '',
-  content: [
-    {
-      link: 'https://lalala10.ru',
-      icon: iconPatch
-    },
-    {
-      link: 'https://lalala11.ru',
-      icon: iconPatch
-    }
-  ],
-}
-]);
+  ]
+)
 
 const popinOpened = ref(false);
 const selectPopinOpened = ref(false);
@@ -59,6 +68,7 @@ const openPopin = (index) => {
   popinOpened.value = true;
   currentIndex.value = index;
 }
+
 watch(popinOpened, (value) => {
   setTimeout(() => {
     if (value && addInput.value) {
@@ -69,10 +79,15 @@ watch(popinOpened, (value) => {
 
 const onPopinButtonClick = () => {
   if (inputValue.value.length > 0) {
-    data.value[currentIndex.value].content.push({
-      link: inputValue.value,
-      icon: iconPatch
-    });
+    console.log(data.value[currentIndex.value]);
+    if (data.value[currentIndex.value].type === 'rows') {
+      data.value[currentIndex.value].content.push(inputValue.value);
+    } else {
+      data.value[currentIndex.value].content.push({
+        link: inputValue.value,
+        icon: '/icons/5.jpg'
+      });
+    }
   }
   inputValue.value = '';
   popinOpened.value = false;
@@ -100,7 +115,7 @@ const changeCardTitle = (payload) => {
 
     </div>
     <div v-if="popinOpened" class="popin">
-      <input type="text" v-model="inputValue" class="popinInput" ref="addInput">
+      <input type="text" v-model="inputValue" class="popinInput" ref="addInput" @keyup.enter="onPopinButtonClick">
       <button class="popinButton" @click="onPopinButtonClick">Add</button>
     </div>
     <div v-if="selectPopinOpened" class="popin">
@@ -154,63 +169,6 @@ const changeCardTitle = (payload) => {
     padding-bottom: 0.56vw;
     margin-bottom: 1vw;
   }
-}
-
-.cardContent {
-  display: grid;
-  gap: 0.35vw;
-
-  @media screen and (max-width: 1023px) {
-    gap: 1vw;
-  }
-}
-
-.cardContent_type_tile {
-  grid-template-columns: repeat(8, 1fr);
-}
-
-.tile {
-  border-radius: 0.7vw;
-  background: #D9D9D9;
-  padding: 0.7vw;
-
-  img {
-    display: block;
-    width: 100%;
-    margin: auto;
-  }
-}
-
-.title {
-  margin-bottom: 0.7vw;
-}
-
-.row {
-  width: 100%;
-  border-radius: 0.7vw;
-  background: #D9D9D9;
-  padding: 0.24vw 0.7vw;
-  margin-bottom: 0.34vw;
-  color: #282828;
-
-  img {
-    display: block;
-    width: 1.1vw;
-    margin: auto;
-
-    @media screen and (max-width: 1023px) {
-      width: 4vw;
-    }
-  }
-}
-
-.favorite {
-  width: 100%;
-  border-radius: 0.7vw;
-  background: #282828;
-  padding: 0.24vw 0.7vw;
-  margin-bottom: 0.34vw;
-  color: #ffffff;
 }
 
 .popin {

@@ -2,6 +2,8 @@
 import { ref, watch } from 'vue';
 import plusIcon from '../assets/plus.svg';
 
+const icons = import.meta.glob('../assets/icons/*.jpg', { eager: true });
+
 const props = defineProps({
     type: { type: String, required: true, },
     title: { type: String, required: true },
@@ -12,8 +14,8 @@ const props = defineProps({
 const emit = defineEmits(['addLink', 'cangeTitle']);
 
 const setSpanHeight = (content) => {
-    const columnsValue = props.type === 'tile' ? 8 : 1;
-    const rowHeight = props.type === 'tile' ? 3.6 : 2.06;
+    const columnsValue = props.type === 'tiles' ? 8 : 1;
+    const rowHeight = props.type === 'tiles' ? 3.6 : 2.06;
     const rowsValue = Math.ceil((content.length + 1) / columnsValue);
     return Math.ceil(rowsValue * rowHeight + 3);
 };
@@ -37,14 +39,44 @@ const inputTitle = (event) => {
 <template>
     <div class="card" :style="`--span: ${spanHeight};`">
         <input type="text" class="titleInput" :value="title" @input="inputTitle">
-        <div :class="['cardContent', props.type === 'tile' ? 'cardContent_type_tile' : 'cardContent_type_row']">
-            <div v-for="item in props.content" :key="item.link" :class="props.type">
-                <img v-if="props.type === 'tile'" :src="item.icon" alt="">
-                <div v-else>
+        <div v-if="props.type === 'tiles'" class="cardContent cardContent_type_tile">
+            <div v-for="item in props.content" :key="item.link" class="tile">
+                <img :src="icons[`../assets${item.icon}`].default">
+                <!-- <div v-else>
+                    {{ item.link }}
+                </div> -->
+            </div>
+            <div class="plus tile" @click="emitAddLink">
+                <img :src="plusIcon" alt="">
+            </div>
+        </div>
+        <div v-if="props.type === 'rows'" class="cardContent cardContent_type_row">
+            <div v-for="item in props.content" :key="item.link" class="row">
+                <!-- <img :src="icons[`../assets${item.icon}`].default"> -->
+                <div>
+                    {{ item }}
+                </div>
+            </div>
+            <div class="plus row" @click="emitAddLink">
+                <img :src="plusIcon" alt="">
+            </div>
+        </div>
+        <div v-if="props.type === 'favorites'" class="cardContent cardContent_type_row">
+            <div v-for="item in props.content" :key="item.link">
+                <div v-if="item.folderName" class="favoriteFolder">
+                    <div v-if="item.folderName" class="favoriteFolderTitle">
+                        {{ item.folderName }}
+                    </div>
+                    <div v-for="itemLink in item.folderContent" class="favorite">
+                        {{ itemLink.link }}
+                    </div>
+                </div>
+                <!-- <img :src="icons[`../assets${item.icon}`].default"> -->
+                <div class="favorite">
                     {{ item.link }}
                 </div>
             </div>
-            <div :class="['plus', props.type === 'tile' ? 'tile' : 'row']" @click="emitAddLink">
+            <div class="plus row" @click="emitAddLink">
                 <img :src="plusIcon" alt="">
             </div>
         </div>
@@ -59,6 +91,60 @@ const inputTitle = (event) => {
     border: none;
     outline: none;
     background: #282828;
+    color: #ffffff;
+}
+
+.cardContent_type_tile {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 0.35vw;
+
+    @media screen and (max-width: 1023px) {
+        gap: 1vw;
+    }
+}
+
+.tile {
+    border-radius: 0.7vw;
+    background: #D9D9D9;
+    padding: 0.7vw;
+
+    img {
+        display: block;
+        width: 100%;
+        margin: auto;
+    }
+}
+
+.title {
+    margin-bottom: 0.7vw;
+}
+
+.row {
+    width: 100%;
+    border-radius: 0.7vw;
+    background: #D9D9D9;
+    padding: 0.24vw 0.7vw;
+    margin-bottom: 0.69vw;
+    color: #282828;
+
+    img {
+        display: block;
+        width: 1.1vw;
+        margin: auto;
+
+        @media screen and (max-width: 1023px) {
+            width: 4vw;
+        }
+    }
+}
+
+.favorite {
+    width: 100%;
+    border-radius: 0.7vw;
+    background: #282828;
+    padding: 0.24vw 0.7vw;
+    margin-bottom: 0.34vw;
     color: #ffffff;
 }
 </style>
