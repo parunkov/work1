@@ -118,9 +118,9 @@ const changeCardTitle = (payload) => {
       <button class="popinButton" @click="onPopinButtonClick">Add</button>
     </div>
     <div v-if="selectPopinOpened" class="popin">
-      <button class="popinButton select" @click="onSelectButtonClick('tile')">Tile</button>
-      <button class="popinButton select" @click="onSelectButtonClick('row')">Row</button>
-      <button class="popinButton select" @click="onSelectButtonClick('favorite')">Faworite</button>
+      <button class="popinButton select" @click="onSelectButtonClick('tiles')">Tile</button>
+      <button class="popinButton select" @click="onSelectButtonClick('rows')">Row</button>
+      <button class="popinButton select" @click="onSelectButtonClick('favorites')">Faworite</button>
     </div>
   </div>
 </template>

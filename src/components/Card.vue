@@ -1,6 +1,8 @@
 <script setup>
 import { ref, watch } from 'vue';
 import plusIcon from '../assets/plus.svg';
+import rightIcon from '../assets/triangle-right.svg';
+import downIcon from '../assets/triangle-down.svg';
 
 const icons = import.meta.glob('../assets/icons/*.jpg', { eager: true });
 
@@ -44,9 +46,6 @@ const inputTitle = (event) => {
         <div v-if="props.type === 'tiles'" class="cardContent cardContent_type_tile">
             <div v-for="item in props.content" :key="item.link" class="tile">
                 <img :src="icons[`../assets${item.icon}`].default">
-                <!-- <div v-else>
-                    {{ item.link }}
-                </div> -->
             </div>
             <div class="plus tile" @click="emitAddLink">
                 <img :src="plusIcon" alt="">
@@ -54,7 +53,6 @@ const inputTitle = (event) => {
         </div>
         <div v-if="props.type === 'rows'" class="cardContent cardContent_type_row">
             <div v-for="item in props.content" :key="item.link" class="row">
-                <!-- <img :src="icons[`../assets${item.icon}`].default"> -->
                 <div>
                     {{ item }}
                 </div>
@@ -68,15 +66,17 @@ const inputTitle = (event) => {
                 <div v-if="item.folderName" class="favoriteFolder">
                     <div v-if="item.folderName" class="favorite favoriteFolderTitle"
                         @click="item.visible = !item.visible">
+                        <img :src="item.visible ? downIcon : rightIcon">
                         {{ item.folderName }}
                     </div>
                     <div v-if="item.visible" v-for="itemLink in item.folderContent"
                         class="favorite favorite_folder_item">
+                        <img :src="icons[`../assets${itemLink.icon}`].default">
                         {{ itemLink.link }}
                     </div>
                 </div>
-                <!-- <img :src="icons[`../assets${item.icon}`].default"> -->
                 <div v-else class="favorite">
+                    <img :src="icons[`../assets${item.icon}`].default">
                     {{ item.link }}
                 </div>
             </div>
@@ -150,6 +150,17 @@ const inputTitle = (event) => {
     padding: 0.24vw 0.7vw;
     margin-bottom: 0.69vw;
     color: #ffffff;
+
+    img {
+        width: 0.8vw;
+        height: 0.8vw;
+        margin-right: 5px;
+
+        @media screen and (max-width: 1023px) {
+            height: 4vw;
+            width: 4vw;
+        }
+    }
 }
 
 .favorite_folder_item {
