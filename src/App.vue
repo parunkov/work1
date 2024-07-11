@@ -1,6 +1,5 @@
 <script setup>
 import { ref, watch } from 'vue';
-import iconPatch from './assets/icon.png';
 import Card from './components/Card.vue';
 import plusIconWhite from './assets/plusWhite.svg';
 

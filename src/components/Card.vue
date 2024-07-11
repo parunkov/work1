@@ -16,7 +16,9 @@ const emit = defineEmits(['addLink', 'cangeTitle']);
 const setSpanHeight = (content) => {
     const columnsValue = props.type === 'tiles' ? 8 : 1;
     const rowHeight = props.type === 'tiles' ? 3.6 : 2.06;
-    const rowsValue = Math.ceil((content.length + 1) / columnsValue);
+    const contentValue = props.content.reduce((summ, item) => summ + (props.type === 'favorites' && item.folderContent && item.visible ? item.folderContent.length + 1 : 1), 1);
+    console.log(contentValue);
+    const rowsValue = Math.ceil(contentValue / columnsValue);
     return Math.ceil(rowsValue * rowHeight + 3);
 };
 
@@ -64,15 +66,17 @@ const inputTitle = (event) => {
         <div v-if="props.type === 'favorites'" class="cardContent cardContent_type_row">
             <div v-for="item in props.content" :key="item.link">
                 <div v-if="item.folderName" class="favoriteFolder">
-                    <div v-if="item.folderName" class="favoriteFolderTitle">
+                    <div v-if="item.folderName" class="favorite favoriteFolderTitle"
+                        @click="item.visible = !item.visible">
                         {{ item.folderName }}
                     </div>
-                    <div v-for="itemLink in item.folderContent" class="favorite">
+                    <div v-if="item.visible" v-for="itemLink in item.folderContent"
+                        class="favorite favorite_folder_item">
                         {{ itemLink.link }}
                     </div>
                 </div>
                 <!-- <img :src="icons[`../assets${item.icon}`].default"> -->
-                <div class="favorite">
+                <div v-else class="favorite">
                     {{ item.link }}
                 </div>
             </div>
@@ -144,7 +148,15 @@ const inputTitle = (event) => {
     border-radius: 0.7vw;
     background: #282828;
     padding: 0.24vw 0.7vw;
-    margin-bottom: 0.34vw;
+    margin-bottom: 0.69vw;
     color: #ffffff;
+}
+
+.favorite_folder_item {
+    padding-left: 30px;
+}
+
+.favoriteFolderTitle {
+    cursor: pointer;
 }
 </style>
