@@ -35,8 +35,11 @@ const onDragOver = (index) => {
 };
 
 const onDrop = (index) => {
+    console.log(index);
+    console.log(draggedIndex.value);
     if (draggedIndex.value === null) return;
     const draggedItem = items.value[draggedIndex.value];
+    console.log(draggedItem);
     items.value.splice(draggedIndex.value, 1);
     items.value.splice(index, 0, draggedItem);
     draggedIndex.value = null;

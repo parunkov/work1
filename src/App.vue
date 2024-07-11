@@ -2,14 +2,18 @@
 import { ref, watch } from 'vue';
 import Card from './components/Card.vue';
 import plusIconWhite from './assets/plusWhite.svg';
-import DraggableList from './components/DraggableList.vue';
 
-const data = ref(localStorage.getItem('p1159data') ? JSON.parse(localStorage.getItem('p1159data')) : []);
+const data = ref(
+  localStorage.getItem('p1159data')
+    ? JSON.parse(localStorage.getItem('p1159data'))
+    : []
+);
 const popinOpened = ref(false);
 const selectPopinOpened = ref(false);
 const inputValue = ref('');
 const currentIndex = ref(0);
 const addInput = ref(null);
+const draggedIndex = ref(null);
 
 // localStorage.removeItem('p1159data');
 
@@ -21,25 +25,26 @@ const sendData = () => {
   fetch('https://mockapi.pasha.design/startpage/1/update/', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(data.value)
-  })
-    .then(response => {
-      // console.log(response);
-    });
+    body: JSON.stringify(data.value),
+  }).then((response) => {
+    // console.log(response);
+  });
   // .then(result => {
   //   console.log(result);
   // });
 };
 
 const loadData = () => {
-  const loadingDate = localStorage.getItem('p1159loadingDate') ? +localStorage.getItem('p1159loadingDate') : 0;
+  const loadingDate = localStorage.getItem('p1159loadingDate')
+    ? +localStorage.getItem('p1159loadingDate')
+    : 0;
   console.log('update diff - ', Date.now() - loadingDate);
   if (Date.now() - loadingDate > 3600) {
     fetch('https://mockapi.pasha.design/startpage/1/')
-      .then(response => response.json())
-      .then(result => {
+      .then((response) => response.json())
+      .then((result) => {
         data.value = result;
         updateStorage();
       });
@@ -52,7 +57,7 @@ const openPopin = (index) => {
   selectPopinOpened.value = false;
   popinOpened.value = true;
   currentIndex.value = index;
-}
+};
 
 watch(popinOpened, (value) => {
   setTimeout(() => {
@@ -69,7 +74,7 @@ const onPopinButtonClick = () => {
     } else {
       data.value[currentIndex.value].content.push({
         link: inputValue.value,
-        icon: '/icons/5.jpg'
+        icon: '/icons/5.jpg',
       });
     }
   }
@@ -77,14 +82,14 @@ const onPopinButtonClick = () => {
   popinOpened.value = false;
   updateStorage();
   // sendData();
-}
+};
 
 const onSelectButtonClick = (type) => {
   data.value.push({ type, content: [] });
   selectPopinOpened.value = false;
   updateStorage();
   // sendData();
-}
+};
 
 let timeoutId;
 const changeCardTitle = (payload) => {
@@ -94,38 +99,91 @@ const changeCardTitle = (payload) => {
     updateStorage();
     // sendData();
   }, 500);
-}
+};
 
 const onFolderClick = (payload) => {
-  data.value[payload.index].content[payload.folderIndex].visible = !payload.visiblity;
+  data.value[payload.index].content[payload.folderIndex].visible =
+    !payload.visiblity;
   updateStorage();
   // sendData();
-}
+};
+
+const onDragStart = (index) => {
+    draggedIndex.value = index;
+};
+
+const onDragEnd = () => {
+    draggedIndex.value = null;
+};
+
+const onDragOver = (index) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+};
+
+const onDrop = (index) => {
+    if (draggedIndex.value === null) return;
+    const draggedItem = data.value[draggedIndex.value];
+    data.value.splice(draggedIndex.value, 1);
+    data.value.splice(index, 0, draggedItem);
+    draggedIndex.value = null;
+};
 </script>
 
 <template>
   <div class="wrapper">
     <div class="container">
-
-      <Card v-for="(item, index) in data" :key="index" :type="item.type" :index="index" :name="item.name"
-        :content="item.content" @addLink="openPopin(index)" @cangeTitle="changeCardTitle"
-        @folderClick="onFolderClick" />
-      <button class="selectButton" @click="selectPopinOpened = true; popinOpened = false;" style="--span: 3">
-        <img :src="plusIconWhite" alt="">
+      <Card
+        v-for="(item, index) in data"
+        :key="index"
+        :type="item.type"
+        :index="index"
+        :name="item.name"
+        :content="item.content"
+        @addLink="openPopin(index)"
+        @cangeTitle="changeCardTitle"
+        @folderClick="onFolderClick"
+        @dragStart="onDragStart"
+        @dragEnd="onDragEnd"
+        @dragover.prevent="onDragOver(index)"
+        @drop="onDrop(index)"
+      />
+      <button
+        class="selectButton"
+        @click="
+          selectPopinOpened = true;
+          popinOpened = false;
+        "
+        style="--span: 3"
+      >
+        <img :src="plusIconWhite" alt="" />
       </button>
-
     </div>
     <div v-if="popinOpened" class="popin">
-      <input type="text" v-model="inputValue" class="popinInput" ref="addInput" @keyup.enter="onPopinButtonClick">
+      <input
+        type="text"
+        v-model="inputValue"
+        class="popinInput"
+        ref="addInput"
+        @keyup.enter="onPopinButtonClick"
+      />
       <button class="popinButton" @click="onPopinButtonClick">Add</button>
     </div>
     <div v-if="selectPopinOpened" class="popin">
-      <button class="popinButton select" @click="onSelectButtonClick('tiles')">Tile</button>
-      <button class="popinButton select" @click="onSelectButtonClick('rows')">Row</button>
-      <button class="popinButton select" @click="onSelectButtonClick('favorites')">Faworite</button>
+      <button class="popinButton select" @click="onSelectButtonClick('tiles')">
+        Tile
+      </button>
+      <button class="popinButton select" @click="onSelectButtonClick('rows')">
+        Row
+      </button>
+      <button
+        class="popinButton select"
+        @click="onSelectButtonClick('favorites')"
+      >
+        Faworite
+      </button>
     </div>
   </div>
-  <DraggableList />
 </template>
 
 <style>
@@ -186,7 +244,7 @@ const onFolderClick = (payload) => {
 .popinInput {
   width: 34.7vw;
   border-radius: 0.7vw;
-  background: #D9D9D9;
+  background: #d9d9d9;
   padding: 0.24vw 0.7vw;
   margin-bottom: 0.34vw;
   color: #282828;
@@ -198,7 +256,7 @@ const onFolderClick = (payload) => {
   display: block;
   margin-top: 0.7vw;
   border-radius: 0.7vw;
-  background: #D9D9D9;
+  background: #d9d9d9;
   padding: 0.24vw 0.7vw;
   margin-bottom: 0.34vw;
   color: #282828;
