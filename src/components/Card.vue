@@ -3,6 +3,7 @@ import { onMounted, onUpdated, ref, watch } from 'vue';
 import plusIcon from '../assets/plus.svg';
 import rightIcon from '../assets/triangle-right.svg';
 import downIcon from '../assets/triangle-down.svg';
+import iconPatch from '../assets/icon.png';
 
 const props = defineProps({
   type: { type: String, required: true },
