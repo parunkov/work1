@@ -143,7 +143,7 @@ const onDragEnd = () => {
             class="favorite favorite_folder_item"
           >
             <img
-              :src="item.icon ? `${HOST}${itemLink.icon}` : iconPatch"
+              :src="itemLink.icon ? `${HOST}${itemLink.icon}` : iconPatch"
             />
             {{ itemLink.link }}
           </div>
