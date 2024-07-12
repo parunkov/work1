@@ -101,7 +101,7 @@ const onDragEnd = () => {
       class="cardContent cardContent_type_tile"
     >
       <div v-for="item in props.content" :key="item.link" class="tile">
-        <img :src="`${HOST}${item.icon}`" />
+        <img :src="item.icon ? `${HOST}${item.icon}` : iconPatch" />
       </div>
       <div class="plus tile" @click="emitAddLink">
         <img :src="plusIcon" alt="" />
@@ -143,13 +143,13 @@ const onDragEnd = () => {
             class="favorite favorite_folder_item"
           >
             <img
-              :src="`${HOST}${itemLink.icon}`"
+              :src="item.icon ? `${HOST}${itemLink.icon}` : iconPatch"
             />
             {{ itemLink.link }}
           </div>
         </div>
         <div v-else class="favorite">
-          <img :src="`${HOST}${item.icon}`" />
+          <img :src="item.icon ? `${HOST}${item.icon}` : iconPatch" />
           {{ item.link }}
         </div>
       </div>
