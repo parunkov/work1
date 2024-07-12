@@ -109,26 +109,33 @@ const onFolderClick = (payload) => {
 };
 
 const onDragStart = (index) => {
-    draggedIndex.value = index;
+  draggedIndex.value = index;
 };
 
 const onDragEnd = () => {
-    draggedIndex.value = null;
+  draggedIndex.value = null;
 };
 
 const onDragOver = (index) => {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
+  event.preventDefault();
+  event.dataTransfer.dropEffect = 'move';
 };
 
 const onDrop = (index) => {
-    if (draggedIndex.value === null) return;
-    const draggedItem = data.value[draggedIndex.value];
-    data.value.splice(draggedIndex.value, 1);
-    data.value.splice(index, 0, draggedItem);
-    draggedIndex.value = null;
-    updateStorage();
+  if (draggedIndex.value === null) return;
+  const draggedItem = data.value[draggedIndex.value];
+  data.value.splice(draggedIndex.value, 1);
+  data.value.splice(index, 0, draggedItem);
+  draggedIndex.value = null;
+  updateStorage();
   // sendData();
+};
+
+const onOverlayClick = ({ target }) => {
+  if (!target.closest('.popin')) {
+    popinOpened.value = false;
+    selectPopinOpened.value = false;
+  }
 };
 </script>
 
@@ -161,29 +168,36 @@ const onDrop = (index) => {
         <img :src="plusIconWhite" alt="" />
       </button>
     </div>
-    <div v-if="popinOpened" class="popin">
-      <input
-        type="text"
-        v-model="inputValue"
-        class="popinInput"
-        ref="addInput"
-        @keyup.enter="onPopinButtonClick"
-      />
-      <button class="popinButton" @click="onPopinButtonClick">Add</button>
+    <div v-if="popinOpened" class="overlay" @click="onOverlayClick">
+      <div class="popin">
+        <input
+          type="text"
+          v-model="inputValue"
+          class="popinInput"
+          ref="addInput"
+          @keyup.enter="onPopinButtonClick"
+        />
+        <button class="popinButton" @click="onPopinButtonClick">Add</button>
+      </div>
     </div>
-    <div v-if="selectPopinOpened" class="popin">
-      <button class="popinButton select" @click="onSelectButtonClick('tiles')">
-        Tile
-      </button>
-      <button class="popinButton select" @click="onSelectButtonClick('rows')">
-        Row
-      </button>
-      <button
-        class="popinButton select"
-        @click="onSelectButtonClick('favorites')"
-      >
-        Faworite
-      </button>
+    <div v-if="selectPopinOpened" class="overlay" @click="onOverlayClick">
+      <div class="popin">
+        <button
+          class="popinButton select"
+          @click="onSelectButtonClick('tiles')"
+        >
+          Tile
+        </button>
+        <button class="popinButton select" @click="onSelectButtonClick('rows')">
+          Row
+        </button>
+        <button
+          class="popinButton select"
+          @click="onSelectButtonClick('favorites')"
+        >
+          Faworite
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -231,6 +245,13 @@ const onDrop = (index) => {
     padding-bottom: 0.56vw;
     margin-bottom: 1vw;
   }
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
 }
 
 .popin {

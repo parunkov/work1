@@ -14,6 +14,7 @@ const props = defineProps({
 const emit = defineEmits(['addLink', 'cangeTitle', 'folderClick', 'dragStart', 'dragEnd']);
 
 const dragging = ref(false);
+const HOST = 'https://mockapi.pasha.design/startpage';
 
 const setSpanHeight = (content) => {
   const columnsValue = props.type === 'tiles' ? 8 : 1;
@@ -99,7 +100,7 @@ const onDragEnd = () => {
       class="cardContent cardContent_type_tile"
     >
       <div v-for="item in props.content" :key="item.link" class="tile">
-        <img :src="`https://mockapi.pasha.design/startpage${item.icon}`" />
+        <img :src="`${HOST}${item.icon}`" />
       </div>
       <div class="plus tile" @click="emitAddLink">
         <img :src="plusIcon" alt="" />
@@ -141,13 +142,13 @@ const onDragEnd = () => {
             class="favorite favorite_folder_item"
           >
             <img
-              :src="`https://mockapi.pasha.design/startpage${itemLink.icon}`"
+              :src="`${HOST}${itemLink.icon}`"
             />
             {{ itemLink.link }}
           </div>
         </div>
         <div v-else class="favorite">
-          <img :src="`https://mockapi.pasha.design/startpage${item.icon}`" />
+          <img :src="`${HOST}${item.icon}`" />
           {{ item.link }}
         </div>
       </div>
