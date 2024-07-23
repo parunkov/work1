@@ -2,7 +2,8 @@
 import { ref, watch } from 'vue';
 import Card from './components/Card.vue';
 import plusIconWhite from './assets/plusWhite.svg';
-import { HOST } from './environment/params';
+
+const HOST = import.meta.env.VITE_URL_API;
 
 const data = ref(
   localStorage.getItem('p1159data')
