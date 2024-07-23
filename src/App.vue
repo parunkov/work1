@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue';
 import Card from './components/Card.vue';
 import plusIconWhite from './assets/plusWhite.svg';
+import { HOST } from './environment/params';
 
 const data = ref(
   localStorage.getItem('p1159data')
@@ -22,7 +23,7 @@ const updateStorage = () => {
 };
 
 const sendData = () => {
-  fetch('https://mockapi.pasha.design/startpage/1/update/', {
+  fetch(`${HOST}/1/update/`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -42,7 +43,7 @@ const loadData = () => {
     : 0;
   console.log('update diff - ', Date.now() - loadingDate);
   if (Date.now() - loadingDate > 3600000) {
-    fetch('https://mockapi.pasha.design/startpage/1/')
+    fetch(`${HOST}/1/`)
       .then((response) => response.json())
       .then((result) => {
         data.value = result;

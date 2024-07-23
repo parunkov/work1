@@ -4,6 +4,7 @@ import plusIcon from '../assets/plus.svg';
 import rightIcon from '../assets/triangle-right.svg';
 import downIcon from '../assets/triangle-down.svg';
 import iconPatch from '../assets/icon.png';
+import { HOST } from '../environment/params';
 
 const props = defineProps({
   type: { type: String, required: true },
@@ -15,7 +16,6 @@ const props = defineProps({
 const emit = defineEmits(['addLink', 'cangeTitle', 'folderClick', 'dragStart', 'dragEnd']);
 
 const dragging = ref(false);
-const HOST = 'https://mockapi.pasha.design/startpage';
 
 const setSpanHeight = (content) => {
   const columnsValue = props.type === 'tiles' ? 8 : 1;
