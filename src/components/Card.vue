@@ -4,7 +4,7 @@ import plusIcon from '../assets/plus.svg';
 import rightIcon from '../assets/triangle-right.svg';
 import downIcon from '../assets/triangle-down.svg';
 import iconPatch from '../assets/icon.png';
-// import { HOST } from '../environment/params';
+
 const HOST = import.meta.env.VITE_URL_API;
 
 const props = defineProps({

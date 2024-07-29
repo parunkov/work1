@@ -24,7 +24,7 @@ const updateStorage = () => {
 };
 
 const sendData = () => {
-  fetch(`${HOST}/1/update/`, {
+  fetch(`${HOST}/post/`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ const loadData = () => {
     : 0;
   console.log('update diff - ', Date.now() - loadingDate);
   if (Date.now() - loadingDate > 3600000) {
-    fetch(`${HOST}/1/`)
+    fetch(`${HOST}/get/`)
       .then((response) => response.json())
       .then((result) => {
         data.value = result;
