@@ -47,8 +47,10 @@ const loadData = () => {
     fetch(`${HOST}/get/`)
       .then((response) => response.json())
       .then((result) => {
-        data.value = result;
-        updateStorage();
+        if (!result.error) {
+          data.value = result;
+          updateStorage();
+        }
       });
     localStorage.setItem('p1159loadingDate', Date.now());
   }
@@ -95,6 +97,7 @@ const onSelectButtonClick = (type) => {
 
 let timeoutId;
 const changeCardTitle = (payload) => {
+  if (payload.index === 'error') return;
   data.value[payload.index].name = payload.name;
   clearTimeout(timeoutId);
   timeoutId = setTimeout(() => {
@@ -248,6 +251,7 @@ const onOverlayClick = ({ target }) => {
     margin-bottom: 1vw;
   }
 }
+
 .overlay {
   position: fixed;
   top: 0;

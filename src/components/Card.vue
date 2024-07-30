@@ -14,14 +14,20 @@ const props = defineProps({
   content: { type: Array, required: true },
 });
 
-const emit = defineEmits(['addLink', 'cangeTitle', 'folderClick', 'dragStart', 'dragEnd']);
+const emit = defineEmits([
+  'addLink',
+  'cangeTitle',
+  'folderClick',
+  'dragStart',
+  'dragEnd',
+]);
 
 const dragging = ref(false);
 
 const setSpanHeight = (content) => {
   const columnsValue = props.type === 'tiles' ? 8 : 1;
   const rowHeight = props.type === 'tiles' ? 3.6 : 2.06;
-  const contentValue = props.content.reduce(
+  const contentValue = props.content?.reduce(
     (summ, item) =>
       summ +
       (props.type === 'favorites' && item.folderContent && item.visible
@@ -76,15 +82,15 @@ const onFolderClick = (event) => {
 };
 
 const onDragStart = (event) => {
-    event.dataTransfer.effectAllowed = 'move';
-    event.dataTransfer.setData('text/plain', props.index);
-    dragging.value = true;
-    emit('dragStart', props.index);
+  event.dataTransfer.effectAllowed = 'move';
+  event.dataTransfer.setData('text/plain', props.index);
+  dragging.value = true;
+  emit('dragStart', props.index);
 };
 
 const onDragEnd = () => {
-    dragging.value = false;
-    emit('dragEnd');
+  dragging.value = false;
+  emit('dragEnd');
 };
 </script>
 <template>
@@ -143,9 +149,7 @@ const onDragEnd = () => {
             v-for="itemLink in item.folderContent"
             class="favorite favorite_folder_item"
           >
-            <img
-              :src="itemLink.icon ? `${HOST}${itemLink.icon}` : iconPatch"
-            />
+            <img :src="itemLink.icon ? `${HOST}${itemLink.icon}` : iconPatch" />
             {{ itemLink.link }}
           </div>
         </div>
