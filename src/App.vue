@@ -3,6 +3,9 @@ import { ref, watch } from 'vue';
 import Card from './components/Card.vue';
 import plusIconWhite from './assets/plusWhite.svg';
 
+// localStorage.removeItem('p1159data');
+// localStorage.removeItem('p1159loadingDate');
+
 const HOST = import.meta.env.VITE_URL_API;
 
 const data = ref(
@@ -16,8 +19,6 @@ const inputValue = ref('');
 const currentIndex = ref(0);
 const addInput = ref(null);
 const draggedIndex = ref(null);
-
-// localStorage.removeItem('p1159data');
 
 const updateStorage = () => {
   localStorage.setItem('p1159data', JSON.stringify(data.value));
