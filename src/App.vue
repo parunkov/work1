@@ -30,6 +30,7 @@ const sendData = () => {
     headers: {
       'Content-Type': 'application/json',
     },
+    mode: 'no-cors',
     body: JSON.stringify(data.value),
   }).then((response) => {
     // console.log(response);
@@ -86,14 +87,14 @@ const onPopinButtonClick = () => {
   inputValue.value = '';
   popinOpened.value = false;
   updateStorage();
-  // sendData();
+  sendData();
 };
 
 const onSelectButtonClick = (type) => {
   data.value.push({ type, content: [] });
   selectPopinOpened.value = false;
   updateStorage();
-  // sendData();
+  sendData();
 };
 
 let timeoutId;
@@ -103,7 +104,7 @@ const changeCardTitle = (payload) => {
   clearTimeout(timeoutId);
   timeoutId = setTimeout(() => {
     updateStorage();
-    // sendData();
+    sendData();
   }, 500);
 };
 
@@ -111,7 +112,7 @@ const onFolderClick = (payload) => {
   data.value[payload.index].content[payload.folderIndex].visible =
     !payload.visiblity;
   updateStorage();
-  // sendData();
+  sendData();
 };
 
 const onDragStart = (index) => {
@@ -134,7 +135,7 @@ const onDrop = (index) => {
   data.value.splice(index, 0, draggedItem);
   draggedIndex.value = null;
   updateStorage();
-  // sendData();
+  sendData();
 };
 
 const onOverlayClick = ({ target }) => {
