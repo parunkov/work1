@@ -117,7 +117,7 @@ const onDragEnd = () => {
 
     <div v-if="props.type === 'rows'" class="cardContent cardContent_type_row">
       <div v-for="item in props.content" :key="item.link" class="row">
-        <div>
+        <div class="rowContent">
           {{ item }}
         </div>
       </div>
@@ -219,6 +219,11 @@ const onDragEnd = () => {
       width: 4vw;
     }
   }
+}
+.rowContent {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .favorite {

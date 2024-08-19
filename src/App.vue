@@ -13,6 +13,7 @@ const data = ref(
     ? JSON.parse(localStorage.getItem('p1159data'))
     : []
 );
+console.log(data.value);
 const popinOpened = ref(false);
 const selectPopinOpened = ref(false);
 const inputValue = ref('');
@@ -34,6 +35,7 @@ const sendData = () => {
     body: JSON.stringify(data.value),
   }).then((response) => {
     // console.log(response);
+    console.log('POST request');
   });
   // .then(result => {
   //   console.log(result);
@@ -52,6 +54,7 @@ const loadData = () => {
         if (!result.error) {
           data.value = result;
           updateStorage();
+          console.log('GET request');
         }
       });
     localStorage.setItem('p1159loadingDate', Date.now());
@@ -80,7 +83,7 @@ const onPopinButtonClick = () => {
     } else {
       data.value[currentIndex.value].content.push({
         link: inputValue.value,
-        icon: '/icons/5.jpg',
+        // icon: '/icons/default.png',
       });
     }
   }
@@ -247,10 +250,12 @@ const onOverlayClick = ({ target }) => {
   border-radius: 1.4vw;
   background: #282828;
   grid-row-end: span var(--span, 1);
+  max-width: 32vw;
 
   @media screen and (max-width: 1023px) {
     padding-bottom: 0.56vw;
     margin-bottom: 1vw;
+    max-width: 98vw;
   }
 }
 
