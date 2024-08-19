@@ -3,8 +3,8 @@ import { ref, watch } from 'vue';
 import Card from './components/Card.vue';
 import plusIconWhite from './assets/plusWhite.svg';
 
-// localStorage.removeItem('p1159data');
-// localStorage.removeItem('p1159loadingDate');
+localStorage.removeItem('p1159data');
+localStorage.removeItem('p1159loadingDate');
 
 const HOST = import.meta.env.VITE_URL_API;
 
@@ -25,6 +25,18 @@ const updateStorage = () => {
   localStorage.setItem('p1159data', JSON.stringify(data.value));
 };
 
+const getRequerst = () => {
+  fetch(`${HOST}/get/`)
+      .then((response) => response.json())
+      .then((result) => {
+        if (!result.error) {
+          data.value = result;
+          updateStorage();
+          console.log('GET request');
+        }
+      });
+};
+
 const sendData = () => {
   fetch(`${HOST}/post/`, {
     method: 'POST',
@@ -35,12 +47,14 @@ const sendData = () => {
     body: JSON.stringify(data.value),
   }).then((response) => {
     // console.log(response);
+  })
+  .then(() => {
     console.log('POST request');
+    getRequerst();
   });
-  // .then(result => {
-  //   console.log(result);
-  // });
 };
+
+
 
 const loadData = () => {
   const loadingDate = localStorage.getItem('p1159loadingDate')
@@ -48,15 +62,16 @@ const loadData = () => {
     : 0;
   console.log('update diff - ', Date.now() - loadingDate);
   if (Date.now() - loadingDate > 3600000) {
-    fetch(`${HOST}/get/`)
-      .then((response) => response.json())
-      .then((result) => {
-        if (!result.error) {
-          data.value = result;
-          updateStorage();
-          console.log('GET request');
-        }
-      });
+    // fetch(`${HOST}/get/`)
+    //   .then((response) => response.json())
+    //   .then((result) => {
+    //     if (!result.error) {
+    //       data.value = result;
+    //       updateStorage();
+    //       console.log('GET request');
+    //     }
+    //   });
+    getRequerst();
     localStorage.setItem('p1159loadingDate', Date.now());
   }
 };

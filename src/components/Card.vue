@@ -155,7 +155,7 @@ const onDragEnd = () => {
         </div>
         <div v-else class="favorite">
           <img :src="item.icon ? `${HOST}${item.icon}` : iconPatch" />
-          {{ item.link }}
+          <span class="favoriteLink">{{ item.link }}</span>
         </div>
       </div>
       <div class="plus row" @click="emitAddLink">
@@ -227,6 +227,8 @@ const onDragEnd = () => {
 }
 
 .favorite {
+  display: flex;
+  align-items: center;
   width: 100%;
   border-radius: 0.7vw;
   background: #282828;
@@ -244,6 +246,13 @@ const onDragEnd = () => {
       width: 4vw;
     }
   }
+}
+
+.favoriteLink {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .favorite_folder_item {
