@@ -21,6 +21,7 @@ const emit = defineEmits([
   'dragStart',
   'dragEnd',
   'crossClick',
+  'addFolderLink'
 ]);
 
 const dragging = ref(false);
@@ -37,7 +38,7 @@ const setSpanHeight = (content) => {
     1
   );
   const rowsValue = Math.ceil(contentValue / columnsValue);
-  return Math.ceil(rowsValue * rowHeight + 3);
+  return Math.ceil(rowsValue * rowHeight + (props.type === 'favorites' ? 5 : 3));
 };
 
 const spanHeight = ref(setSpanHeight(props.content));
@@ -55,6 +56,13 @@ onUpdated(() => {
 
 const emitAddLink = () => {
   emit('addLink', props.index);
+  setTimeout(() => {
+    spanHeight.value = setSpanHeight(props.content);
+  }, 100);
+};
+
+const emitAddFolderLink = () => {
+  emit('addFolderLink', props.index);
   setTimeout(() => {
     spanHeight.value = setSpanHeight(props.content);
   }, 100);
@@ -193,6 +201,10 @@ const onCrossClick = (event) => {
           <span class="favoriteLink">{{ item.link }}</span>
         </div>
       </div>
+      <div class="plus plus_type_folder row" @click="emitAddFolderLink">
+        <img class="plusFolderIcon" :src="plusIcon" alt="" />
+        <div class="plusFolderText">folder</div>
+      </div>
       <div class="plus row" @click="emitAddLink">
         <img :src="plusIcon" alt="" />
       </div>
@@ -320,5 +332,19 @@ const onCrossClick = (event) => {
 
 .favoriteFolderTitle {
   cursor: pointer;
+}
+
+.plusFolderIcon {
+  width: 1.1vw;
+  margin: 0 !important;
+}
+
+.plusFolderText {
+  margin-left: 0.42vw;
+}
+
+.plus_type_folder {
+  display: flex;
+  justify-content: center;
 }
 </style>

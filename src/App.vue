@@ -21,6 +21,7 @@ const inputValue = ref('');
 const currentIndex = ref(0);
 const addInput = ref(null);
 const draggedIndex = ref(null);
+const isAdiingFolder = ref(false);
 
 const updateStorage = () => {
   localStorage.setItem('p1159data', JSON.stringify(data.value));
@@ -52,7 +53,7 @@ const sendData = () => {
     })
     .then(() => {
       console.log('POST request');
-      getRequerst();
+      // getRequerst();
     });
 };
 
@@ -60,7 +61,7 @@ const loadData = () => {
   const loadingDate = localStorage.getItem('p1159loadingDate')
     ? +localStorage.getItem('p1159loadingDate')
     : 0;
-  console.log('syorage saved - ', new Date(loadingDate));
+  console.log('storage saved - ', new Date(loadingDate));
   console.log('update diff - ', Date.now() - loadingDate);
   if (Date.now() - loadingDate > 3600000) {
     getRequerst();
@@ -165,6 +166,10 @@ const onCrossClick = (payload) => {
     sendData();
   }
 };
+
+const onAddFolder = (index) => {
+  openPopin(index);
+}
 </script>
 
 <template>
@@ -185,6 +190,7 @@ const onCrossClick = (payload) => {
         @dragover.prevent="onDragOver(index)"
         @drop="onDrop(index)"
         @crossClick="onCrossClick"
+        @addFolderLink="onAddFolder(index)"
       />
       <button
         class="selectButton"
