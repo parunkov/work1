@@ -96,7 +96,7 @@ const onPopinButtonClick = () => {
         data.value[currentIndex.value].content.push({
           folderContent: [],
           folderName: inputValue.value,
-          visible: false
+          visible: false,
         });
         isAdiingFolder.value = false;
       } else {
@@ -170,15 +170,24 @@ const onOverlayClick = ({ target }) => {
 };
 
 const onCrossClick = (payload) => {
-  if (payload.cardType === 'tile' || payload.cardType === 'row' || payload.cardType === 'favorite') {
-    data.value[payload.cardIndex].content.splice(payload.itemIndex, 1);
-    updateStorage();
-    sendData();
-  }
+  setTimeout(() => {
+    if (
+      payload.cardType === 'tile' ||
+      payload.cardType === 'row' ||
+      payload.cardType === 'favorite'
+    ) {
+      data.value[payload.cardIndex].content.splice(payload.itemIndex, 1);
+      updateStorage();
+      sendData();
+    }
 
-  if (payload.cardType === 'favoriteFolder') {
-    console.log(data.value[payload.cardIndex].content[payload.folderIndex]?.folderContent);
-  }
+    if (payload.cardType === 'favoriteFolder') {
+      console.log(
+        data.value[payload.cardIndex].content[payload.folderIndex]
+          ?.folderContent
+      );
+    }
+  }, 2000);
 };
 
 const onAddFolder = (index) => {
