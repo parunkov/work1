@@ -89,10 +89,20 @@ const onPopinButtonClick = () => {
     if (data.value[currentIndex.value].type === 'rows') {
       data.value[currentIndex.value].content.push(inputValue.value);
     } else {
-      data.value[currentIndex.value].content.push({
-        link: inputValue.value,
-        // icon: '/icons/default.png',
-      });
+      if (isAdiingFolder.value) {
+        data.value[currentIndex.value].content.push({
+          folderContent: [],
+          folderName: inputValue.value,
+          visible: false
+        });
+        isAdiingFolder.value = false;
+      } else {
+        data.value[currentIndex.value].content.push({
+          link: inputValue.value,
+          // icon: '/icons/default.png',
+        });
+        isAdiingFolder.value = false;
+      }
     }
   }
   inputValue.value = '';
@@ -169,7 +179,8 @@ const onCrossClick = (payload) => {
 
 const onAddFolder = (index) => {
   openPopin(index);
-}
+  isAdiingFolder.value = true;
+};
 </script>
 
 <template>
