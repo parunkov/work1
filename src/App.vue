@@ -13,6 +13,54 @@ const data = ref(
     ? JSON.parse(localStorage.getItem('p1159data'))
     : []
 );
+
+// const data = ref(
+//   [
+//     {
+//       "type": "tiles",
+//       "name": "Tiles-example",
+//       "content": [
+//         {
+//           "link": "https://lalala.ru",
+//         },
+//         {
+//           "link": "https://lalala.ru",
+//         }
+//       ]
+//     },
+//     {
+//       "type": "favorites",
+//       "content": [
+//         {
+//           "folderName": "folder1",
+//           "folderContent": [
+//             {
+//               "link": "https://lalala.ru",
+//             },
+//             {
+//               "link": "https://lalala.ru",
+//             }
+//           ]
+//         },
+//         {
+//           "link": "https://lalala.ru",
+//         },
+//         {
+//           "link": "https://lalala.ru",
+//         }
+//       ]
+//     },
+//     {
+//       "type": "rows",
+//       "name": "Rows-example",
+//       "content": [
+//         "https://lalala.ru",
+//         "https://lalala2.ru"
+//       ]
+//     }
+//   ]
+// )
+
 console.log(data.value);
 const popinOpened = ref(false);
 const selectPopinOpened = ref(false);
