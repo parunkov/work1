@@ -4,6 +4,7 @@ import plusIcon from '../assets/plus.svg';
 import rightIcon from '../assets/triangle-right.svg';
 import downIcon from '../assets/triangle-down.svg';
 import iconPatch from '../assets/icon.png';
+import { crossMarkup } from '../assets/icons';
 
 const HOST = import.meta.env.VITE_URL_API;
 
@@ -21,7 +22,7 @@ const emit = defineEmits([
   'dragStart',
   'dragEnd',
   'crossClick',
-  'addFolderLink'
+  'addFolderLink',
 ]);
 
 const dragging = ref(false);
@@ -38,7 +39,9 @@ const setSpanHeight = (content) => {
     1
   );
   const rowsValue = Math.ceil(contentValue / columnsValue);
-  return Math.ceil(rowsValue * rowHeight + (props.type === 'favorites' ? 5 : 3));
+  return Math.ceil(
+    rowsValue * rowHeight + (props.type === 'favorites' ? 5 : 3)
+  );
 };
 
 const spanHeight = ref(setSpanHeight(props.content));
@@ -103,14 +106,15 @@ const onDragEnd = () => {
 };
 
 const onCrossClick = (event) => {
-  console.log(event.target);
+  event.target.closest('.cross')?.classList.add('loading');
+
   const card = event.target.closest('.card');
   const cards = [...document.querySelectorAll('.card')];
   const cardIndex = cards.findIndex((element) => element === card);
-  console.log(cardIndex);
 
   let itemIndex;
   let cardType;
+  let folderIndex;
 
   const tiles = [...card.querySelectorAll('.tile')];
   const tile = event.target.closest('.tile');
@@ -128,29 +132,35 @@ const onCrossClick = (event) => {
     cardType = 'row';
   }
 
-  console.log(cardType);
-  console.log(itemIndex);
-  const payload = { cardIndex, cardType, itemIndex };
+  const folder = event.target.closest('.favoriteFolder');
+  const favorite = event.target.closest('.favorite');
+  const wrapper = event.target.closest('.favoriteWrapper');
+  const wrappers = [...card.querySelectorAll('.favoriteWrapper')];
+
+  if (folder) {
+    folderIndex = wrappers.findIndex((element) => element === wrapper);
+    const folderItem = event.target.closest('.favorite_folder_item');
+    const folderItems = [...folder.querySelectorAll('.favorite_folder_item')];
+    itemIndex = folderItems.findIndex((element) => element === folderItem);
+    cardType = 'favoriteFolder';
+  } else if (favorite) {
+    itemIndex = wrappers.findIndex((element) => element === wrapper);
+    cardType = 'favorite';
+  }
+
+  const payload = { cardIndex, cardType, itemIndex, folderIndex };
   emit('crossClick', payload);
 };
 </script>
+
 <template>
-  <div
-    class="card"
-    :style="`--span: ${spanHeight};`"
-    :draggable="true"
-    @dragstart="onDragStart"
-    @dragend="onDragEnd"
-  >
+  <div class="card" :style="`--span: ${spanHeight};`" :draggable="true" @dragstart="onDragStart" @dragend="onDragEnd">
     <input type="text" class="titleInput" :value="name" @input="inputTitle" />
 
-    <div
-      v-if="props.type === 'tiles'"
-      class="cardContent cardContent_type_tile"
-    >
+    <div v-if="props.type === 'tiles'" class="cardContent cardContent_type_tile">
       <div v-for="item in props.content" :key="item.link" class="tile">
         <img :src="item.icon ? `${HOST}${item.icon}` : iconPatch" />
-        <div class="cross cross_type_tile" @click="onCrossClick">X</div>
+        <div class="cross cross_type_tile" @click="onCrossClick" v-html="crossMarkup"></div>
       </div>
       <div class="plus tile" @click="emitAddLink">
         <img :src="plusIcon" alt="" />
@@ -162,43 +172,30 @@ const onCrossClick = (event) => {
         <div class="rowContent">
           {{ item }}
         </div>
-        <div class="cross cross_type_row" @click="onCrossClick">X</div>
+        <div class="cross cross_type_row" @click="onCrossClick" v-html="crossMarkup"></div>
       </div>
       <div class="plus row" @click="emitAddLink">
         <img :src="plusIcon" alt="" />
       </div>
     </div>
 
-    <div
-      v-if="props.type === 'favorites'"
-      class="cardContent cardContent_type_row"
-    >
-      <div v-for="(item, folderIndex) in props.content" :key="item.link">
-        <div
-          v-if="item.folderName"
-          class="favoriteFolder"
-          :data-folder-index="folderIndex"
-        >
-          <div
-            v-if="item.folderName"
-            class="favorite favoriteFolderTitle"
-            @click="onFolderClick"
-          >
+    <div v-if="props.type === 'favorites'" class="cardContent cardContent_type_row">
+      <div v-for="(item, folderIndex) in props.content" :key="item.link" class="favoriteWrapper">
+        <div v-if="item.folderName" class="favoriteFolder" :data-folder-index="folderIndex">
+          <div v-if="item.folderName" class="favorite favoriteFolderTitle" @click="onFolderClick">
             <img :src="item.visible ? downIcon : rightIcon" />
             {{ item.folderName }}
           </div>
-          <div
-            v-if="item.visible"
-            v-for="itemLink in item.folderContent"
-            class="favorite favorite_folder_item"
-          >
+          <div v-if="item.visible" v-for="itemLink in item.folderContent" class="favorite favorite_folder_item">
             <img :src="itemLink.icon ? `${HOST}${itemLink.icon}` : iconPatch" />
             {{ itemLink.link }}
+            <div class="cross cross_type_favorite" @click="onCrossClick" v-html="crossMarkup"></div>
           </div>
         </div>
         <div v-else class="favorite">
           <img :src="item.icon ? `${HOST}${item.icon}` : iconPatch" />
           <span class="favoriteLink">{{ item.link }}</span>
+          <div class="cross cross_type_favorite" @click="onCrossClick" v-html="crossMarkup"></div>
         </div>
       </div>
       <div class="plus plus_type_folder row" @click="emitAddFolderLink">
@@ -211,6 +208,7 @@ const onCrossClick = (event) => {
     </div>
   </div>
 </template>
+
 <style scoped>
 .titleInput {
   display: block;
@@ -253,6 +251,11 @@ const onCrossClick = (event) => {
   border-radius: 0.435vw;
   background: #3a3a3a;
   cursor: pointer;
+  @media screen and (max-width: 1023px) {
+    width: 2vw;
+    height: 2vw;
+    border-radius: 1vw;
+  }
 }
 
 .cross_type_tile {
@@ -260,7 +263,8 @@ const onCrossClick = (event) => {
   right: 0.087vw;
 }
 
-.cross_type_row {
+.cross_type_row,
+.cross_type_favorite {
   top: 50%;
   right: 0.087vw;
   transform: translateY(-50%);
@@ -298,12 +302,14 @@ const onCrossClick = (event) => {
 }
 
 .favorite {
+  position: relative;
   display: flex;
   align-items: center;
   width: 100%;
   border-radius: 0.7vw;
   background: #282828;
   padding: 0.24vw 0.7vw;
+  padding-right: 1.57vw;
   margin-bottom: 0.69vw;
   color: #ffffff;
 
@@ -346,5 +352,42 @@ const onCrossClick = (event) => {
 .plus_type_folder {
   display: flex;
   justify-content: center;
+}
+</style>
+
+<style>
+.crossIcon,
+.crossIcon svg,
+.crossLoader,
+.crossLoader svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0.7vw;
+  height: 0.7vw;
+  @media screen and (max-width: 1023px) {
+    width: 1.6vw;
+    height: 1.6vw;
+  }
+}
+
+.crossLoader,
+.crossLoader svg {
+  display: none;
+}
+
+.cross.loading {
+  cursor: default;
+
+  .crossIcon,
+  .crossIcon svg {
+    display: none;
+  }
+
+  .crossLoader,
+  .crossLoader svg {
+    display: block;
+  }
 }
 </style>

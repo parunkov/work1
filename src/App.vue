@@ -53,6 +53,9 @@ const sendData = () => {
     })
     .then(() => {
       console.log('POST request');
+      document.querySelectorAll('.cross.loading').forEach((item) => {
+        item.classList.remove('loading');
+      });
       // getRequerst();
     });
 };
@@ -170,10 +173,14 @@ const onCrossClick = (payload) => {
   console.log(payload);
   console.log(data.value[payload.cardIndex]);
 
-  if (payload.cardType === 'tile' || payload.cardType === 'row') {
+  if (payload.cardType === 'tile' || payload.cardType === 'row' || payload.cardType === 'favorite') {
     data.value[payload.cardIndex].content.splice(payload.itemIndex, 1);
     updateStorage();
     sendData();
+  }
+
+  if (payload.cardType === 'favoriteFolder') {
+    console.log(data.value[payload.cardIndex].content[payload.folderIndex]?.folderContent);
   }
 };
 
