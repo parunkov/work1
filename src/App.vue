@@ -3,8 +3,8 @@ import { ref, watch } from 'vue';
 import Card from './components/Card.vue';
 import plusIconWhite from './assets/plusWhite.svg';
 
-localStorage.removeItem('p1159data');
-localStorage.removeItem('p1159loadingDate');
+// localStorage.removeItem('p1159data');
+// localStorage.removeItem('p1159loadingDate');
 
 const HOST = import.meta.env.VITE_URL_API;
 
@@ -60,17 +60,9 @@ const loadData = () => {
   const loadingDate = localStorage.getItem('p1159loadingDate')
     ? +localStorage.getItem('p1159loadingDate')
     : 0;
+  console.log('syorage saved - ', new Date(loadingDate));
   console.log('update diff - ', Date.now() - loadingDate);
   if (Date.now() - loadingDate > 3600000) {
-    // fetch(`${HOST}/get/`)
-    //   .then((response) => response.json())
-    //   .then((result) => {
-    //     if (!result.error) {
-    //       data.value = result;
-    //       updateStorage();
-    //       console.log('GET request');
-    //     }
-    //   });
     getRequerst();
     localStorage.setItem('p1159loadingDate', Date.now());
   }
