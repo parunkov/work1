@@ -371,6 +371,9 @@ const onCrossClick = (event) => {
     height: 1.6vw;
   }
 }
+.cross:hover .crossIcon svg {
+  fill: #FFA500;
+}
 
 .crossLoader,
 .crossLoader svg {
