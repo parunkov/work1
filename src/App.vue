@@ -27,14 +27,14 @@ const updateStorage = () => {
 
 const getRequerst = () => {
   fetch(`${HOST}/get/`)
-      .then((response) => response.json())
-      .then((result) => {
-        if (!result.error) {
-          data.value = result;
-          updateStorage();
-          console.log('GET request');
-        }
-      });
+    .then((response) => response.json())
+    .then((result) => {
+      if (!result.error) {
+        data.value = result;
+        updateStorage();
+        console.log('GET request');
+      }
+    });
 };
 
 const sendData = () => {
@@ -45,16 +45,15 @@ const sendData = () => {
     },
     mode: 'no-cors',
     body: JSON.stringify(data.value),
-  }).then((response) => {
-    // console.log(response);
   })
-  .then(() => {
-    console.log('POST request');
-    getRequerst();
-  });
+    .then((response) => {
+      // console.log(response);
+    })
+    .then(() => {
+      console.log('POST request');
+      getRequerst();
+    });
 };
-
-
 
 const loadData = () => {
   const loadingDate = localStorage.getItem('p1159loadingDate')
@@ -154,6 +153,17 @@ const onOverlayClick = ({ target }) => {
     selectPopinOpened.value = false;
   }
 };
+
+const onCrossClick = (payload) => {
+  console.log(payload);
+  console.log(data.value[payload.cardIndex]);
+
+  if (payload.cardType === 'tile' || payload.cardType === 'row') {
+    data.value[payload.cardIndex].content.splice(payload.itemIndex, 1);
+    updateStorage();
+    sendData();
+  }
+};
 </script>
 
 <template>
@@ -173,6 +183,7 @@ const onOverlayClick = ({ target }) => {
         @dragEnd="onDragEnd"
         @dragover.prevent="onDragOver(index)"
         @drop="onDrop(index)"
+        @crossClick="onCrossClick"
       />
       <button
         class="selectButton"

@@ -20,6 +20,7 @@ const emit = defineEmits([
   'folderClick',
   'dragStart',
   'dragEnd',
+  'crossClick',
 ]);
 
 const dragging = ref(false);
@@ -92,6 +93,38 @@ const onDragEnd = () => {
   dragging.value = false;
   emit('dragEnd');
 };
+
+const onCrossClick = (event) => {
+  console.log(event.target);
+  const card = event.target.closest('.card');
+  const cards = [...document.querySelectorAll('.card')];
+  const cardIndex = cards.findIndex((element) => element === card);
+  console.log(cardIndex);
+
+  let itemIndex;
+  let cardType;
+
+  const tiles = [...card.querySelectorAll('.tile')];
+  const tile = event.target.closest('.tile');
+
+  if (tile) {
+    itemIndex = tiles.findIndex((element) => element === tile);
+    cardType = 'tile';
+  }
+
+  const rows = [...card.querySelectorAll('.row')];
+  const row = event.target.closest('.row');
+
+  if (row) {
+    itemIndex = rows.findIndex((element) => element === row);
+    cardType = 'row';
+  }
+
+  console.log(cardType);
+  console.log(itemIndex);
+  const payload = { cardIndex, cardType, itemIndex };
+  emit('crossClick', payload);
+};
 </script>
 <template>
   <div
@@ -109,6 +142,7 @@ const onDragEnd = () => {
     >
       <div v-for="item in props.content" :key="item.link" class="tile">
         <img :src="item.icon ? `${HOST}${item.icon}` : iconPatch" />
+        <div class="cross cross_type_tile" @click="onCrossClick">X</div>
       </div>
       <div class="plus tile" @click="emitAddLink">
         <img :src="plusIcon" alt="" />
@@ -120,6 +154,7 @@ const onDragEnd = () => {
         <div class="rowContent">
           {{ item }}
         </div>
+        <div class="cross cross_type_row" @click="onCrossClick">X</div>
       </div>
       <div class="plus row" @click="emitAddLink">
         <img :src="plusIcon" alt="" />
@@ -187,6 +222,7 @@ const onDragEnd = () => {
 }
 
 .tile {
+  position: relative;
   border-radius: 0.7vw;
   background: #d9d9d9;
   padding: 0.7vw;
@@ -198,15 +234,37 @@ const onDragEnd = () => {
   }
 }
 
+.cross {
+  position: absolute;
+  width: 0.87vw;
+  height: 0.87vw;
+  border-radius: 0.435vw;
+  background: #3a3a3a;
+  cursor: pointer;
+}
+
+.cross_type_tile {
+  top: 0.087vw;
+  right: 0.087vw;
+}
+
+.cross_type_row {
+  top: 50%;
+  right: 0.087vw;
+  transform: translateY(-50%);
+}
+
 .title {
   margin-bottom: 0.7vw;
 }
 
 .row {
+  position: relative;
   width: 100%;
   border-radius: 0.7vw;
   background: #d9d9d9;
   padding: 0.24vw 0.7vw;
+  padding-right: 1.57vw;
   margin-bottom: 0.69vw;
   color: #282828;
 
@@ -220,6 +278,7 @@ const onDragEnd = () => {
     }
   }
 }
+
 .rowContent {
   overflow: hidden;
   white-space: nowrap;
