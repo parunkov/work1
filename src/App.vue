@@ -14,7 +14,7 @@ const data = ref(
     : []
 );
 
-console.log(data.value);
+// console.log(data.value);
 const popinOpened = ref(false);
 const selectPopinOpened = ref(false);
 const inputValue = ref('');
@@ -56,7 +56,7 @@ const sendData = () => {
       document.querySelectorAll('.cross.loading').forEach((item) => {
         item.classList.remove('loading');
       });
-      // getRequerst();
+      getRequerst();
     });
 };
 
@@ -170,9 +170,6 @@ const onOverlayClick = ({ target }) => {
 };
 
 const onCrossClick = (payload) => {
-  console.log(payload);
-  console.log(data.value[payload.cardIndex]);
-
   if (payload.cardType === 'tile' || payload.cardType === 'row' || payload.cardType === 'favorite') {
     data.value[payload.cardIndex].content.splice(payload.itemIndex, 1);
     updateStorage();
