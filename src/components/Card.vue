@@ -151,16 +151,46 @@ const onCrossClick = (event) => {
   const payload = { cardIndex, cardType, itemIndex, folderIndex };
   emit('crossClick', payload);
 };
+
+const onFolderCrossClick = (event) => {
+  event.preventDefault();
+  event.target.closest('.cross')?.classList.add('loading');
+
+  const card = event.target.closest('.card');
+  const cards = [...document.querySelectorAll('.card')];
+  const cardIndex = cards.findIndex((element) => element === card);
+  const wrapper = event.target.closest('.favoriteWrapper');
+  const wrappers = [...card.querySelectorAll('.favoriteWrapper')];
+  const itemIndex = wrappers.findIndex((element) => element === wrapper);
+  const cardType = 'folder';
+  const folderIndex = null;
+
+  const payload = { cardIndex, cardType, itemIndex, folderIndex };
+  emit('crossClick', payload);
+};
 </script>
 
 <template>
-  <div class="card" :style="`--span: ${spanHeight};`" :draggable="true" @dragstart="onDragStart" @dragend="onDragEnd">
+  <div
+    class="card"
+    :style="`--span: ${spanHeight};`"
+    :draggable="true"
+    @dragstart="onDragStart"
+    @dragend="onDragEnd"
+  >
     <input type="text" class="titleInput" :value="name" @input="inputTitle" />
 
-    <div v-if="props.type === 'tiles'" class="cardContent cardContent_type_tile">
+    <div
+      v-if="props.type === 'tiles'"
+      class="cardContent cardContent_type_tile"
+    >
       <div v-for="item in props.content" :key="item.link" class="tile">
         <img :src="item.icon ? `${HOST}${item.icon}` : iconPatch" />
-        <div class="cross cross_type_tile" @click="onCrossClick" v-html="crossMarkup"></div>
+        <div
+          class="cross cross_type_tile"
+          @click="onCrossClick"
+          v-html="crossMarkup"
+        ></div>
       </div>
       <div class="plus tile" @click="emitAddLink">
         <img :src="plusIcon" alt="" />
@@ -172,30 +202,67 @@ const onCrossClick = (event) => {
         <div class="rowContent">
           {{ item }}
         </div>
-        <div class="cross cross_type_row" @click="onCrossClick" v-html="crossMarkup"></div>
+        <div
+          class="cross cross_type_row"
+          @click="onCrossClick"
+          v-html="crossMarkup"
+        ></div>
       </div>
       <div class="plus row" @click="emitAddLink">
         <img :src="plusIcon" alt="" />
       </div>
     </div>
 
-    <div v-if="props.type === 'favorites'" class="cardContent cardContent_type_row">
-      <div v-for="(item, folderIndex) in props.content" :key="item.link" class="favoriteWrapper">
-        <div v-if="item.folderName" class="favoriteFolder" :data-folder-index="folderIndex">
-          <div v-if="item.folderName" class="favorite favoriteFolderTitle" @click="onFolderClick">
-            <img :src="item.visible ? downIcon : rightIcon" />
-            {{ item.folderName }}
+    <div
+      v-if="props.type === 'favorites'"
+      class="cardContent cardContent_type_row"
+    >
+      <div
+        v-for="(item, folderIndex) in props.content"
+        :key="item.link"
+        class="favoriteWrapper"
+      >
+        <div
+          v-if="item.folderName"
+          class="favoriteFolder"
+          :data-folder-index="folderIndex"
+        >
+          <div
+            v-if="item.folderName"
+            class="favorite favoriteFolderTitle"
+          >
+            <div class="folderContent" @click="onFolderClick">
+              <img :src="item.visible ? downIcon : rightIcon" />
+              {{ item.folderName }}
+            </div>
+            <div
+              class="cross cross_type_row"
+              @click="onFolderCrossClick"
+              v-html="crossMarkup"
+            ></div>
           </div>
-          <div v-if="item.visible" v-for="itemLink in item.folderContent" class="favorite favorite_folder_item">
+          <div
+            v-if="item.visible"
+            v-for="itemLink in item.folderContent"
+            class="favorite favorite_folder_item"
+          >
             <img :src="itemLink.icon ? `${HOST}${itemLink.icon}` : iconPatch" />
             {{ itemLink.link }}
-            <div class="cross cross_type_favorite" @click="onCrossClick" v-html="crossMarkup"></div>
+            <div
+              class="cross cross_type_favorite"
+              @click="onCrossClick"
+              v-html="crossMarkup"
+            ></div>
           </div>
         </div>
         <div v-else class="favorite">
           <img :src="item.icon ? `${HOST}${item.icon}` : iconPatch" />
           <span class="favoriteLink">{{ item.link }}</span>
-          <div class="cross cross_type_favorite" @click="onCrossClick" v-html="crossMarkup"></div>
+          <div
+            class="cross cross_type_favorite"
+            @click="onCrossClick"
+            v-html="crossMarkup"
+          ></div>
         </div>
       </div>
       <div class="plus plus_type_folder row" @click="emitAddFolderLink">
@@ -336,6 +403,11 @@ const onCrossClick = (event) => {
   padding-left: 30px;
 }
 
+.folderContent {
+  display: flex;
+  align-items: center;
+}
+
 .favoriteFolderTitle {
   cursor: pointer;
 }
@@ -372,7 +444,7 @@ const onCrossClick = (event) => {
   }
 }
 .cross:hover .crossIcon svg {
-  fill: #FFA500;
+  fill: #ffa500;
 }
 
 .crossLoader,

@@ -153,6 +153,8 @@ const onDragOver = (index) => {
 };
 
 const onDrop = (index) => {
+console.log(index);
+
   if (draggedIndex.value === null) return;
   const draggedItem = data.value[draggedIndex.value];
   data.value.splice(draggedIndex.value, 1);
@@ -174,7 +176,8 @@ const onCrossClick = (payload) => {
     if (
       payload.cardType === 'tile' ||
       payload.cardType === 'row' ||
-      payload.cardType === 'favorite'
+      payload.cardType === 'favorite' ||
+      payload.cardType === 'folder'
     ) {
       data.value[payload.cardIndex].content.splice(payload.itemIndex, 1);
       updateStorage();
