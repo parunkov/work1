@@ -197,8 +197,6 @@ const onItemDrop = (event) => {
   const cards = [...document.querySelectorAll('.card')];
   const cardIndex = cards.findIndex((element) => element === card);
   const payload = { index, cardIndex, draggingIndex: itemDraggingIndex.value };
-  console.log(payload);
-  
   emit('itemDrop', payload);
 };
 </script>
@@ -271,7 +269,12 @@ const onItemDrop = (event) => {
       <div
         v-for="(item, folderIndex) in props.content"
         :key="item.link"
-        class="favoriteWrapper"
+        class="favoriteWrapper item"
+        :draggable="true"
+        @dragstart="onItemDragStart"
+        @dragend="onItemDragEnd"
+        @dragover.prevent
+        @drop="onItemDrop"
       >
         <div
           v-if="item.folderName"
