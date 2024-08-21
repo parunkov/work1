@@ -154,8 +154,6 @@ const onDragOver = (index) => {
 };
 
 const onDrop = (index) => {
-  console.log(index);
-
   if (draggedIndex.value === null) return;
   const draggedItem = data.value[draggedIndex.value];
   data.value.splice(draggedIndex.value, 1);
@@ -211,6 +209,15 @@ const onAddFolder = (index) => {
   openPopin(index);
   isAdiingFolder.value = true;
 };
+
+const onItemDrop = (payload) => {
+  const draggedItem = data.value[payload.cardIndex].content[payload.draggingIndex];
+  data.value[payload.cardIndex].content.splice(payload.draggingIndex, 1);
+  data.value[payload.cardIndex].content.splice(payload.index, 0, draggedItem);
+  draggedIndex.value = null;
+  updateStorage();
+  sendData();
+}
 </script>
 
 <template>
@@ -232,6 +239,7 @@ const onAddFolder = (index) => {
         @drop="onDrop(index)"
         @crossClick="onCrossClick"
         @addFolderLink="onAddFolder(index)"
+        @itemDrop="onItemDrop"
       />
       <button
         class="selectButton"

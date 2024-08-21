@@ -23,9 +23,12 @@ const emit = defineEmits([
   'dragEnd',
   'crossClick',
   'addFolderLink',
+  'itemDrop'
 ]);
 
 const dragging = ref(false);
+const itemDraggingIndex = ref(null);
+const cardForItemDragging = ref(null);
 
 const setSpanHeight = (content) => {
   const columnsValue = props.type === 'tiles' ? 8 : 1;
@@ -168,6 +171,33 @@ const onFolderCrossClick = (event) => {
   const payload = { cardIndex, cardType, itemIndex, folderIndex };
   emit('crossClick', payload);
 };
+
+const onItemDragStart = (event) => {
+  const card = event.target.closest('.card');
+  cardForItemDragging.value = card;
+  const items = [...card.querySelectorAll('.item')];
+  const index = items.findIndex((element) => element === event.target);
+  itemDraggingIndex.value = index;
+  event.dataTransfer.effectAllowed = 'move';
+  event.dataTransfer.setData('text/plain', index);
+};
+
+const onItemDragEnd = () => {
+  cardForItemDragging.value = null;
+  itemDraggingIndex.value = null;
+};
+const onItemDrop = (event) => {
+  const item = event.target.closest('.item');
+  const card = event.target.closest('.card');
+  const items = [...card.querySelectorAll('.item')];
+  const index = items.findIndex((element) => element === item);
+  if (cardForItemDragging.value !== card) return;
+
+  const cards = [...document.querySelectorAll('.card')];
+  const cardIndex = cards.findIndex((element) => element === card);
+  const payload = { index, cardIndex, draggingIndex: itemDraggingIndex.value };
+  emit('itemDrop', payload);
+};
 </script>
 
 <template>
@@ -184,7 +214,7 @@ const onFolderCrossClick = (event) => {
       v-if="props.type === 'tiles'"
       class="cardContent cardContent_type_tile"
     >
-      <div v-for="item in props.content" :key="item.link" class="tile">
+      <div v-for="item in props.content" :key="item.link" class="tile item">
         <img :src="item.icon ? `${HOST}${item.icon}` : iconPatch" />
         <div
           class="cross cross_type_tile"
@@ -198,7 +228,16 @@ const onFolderCrossClick = (event) => {
     </div>
 
     <div v-if="props.type === 'rows'" class="cardContent cardContent_type_row">
-      <div v-for="item in props.content" :key="item.link" class="row">
+      <div
+        v-for="item in props.content"
+        :key="item.link"
+        class="row item"
+        :draggable="true"
+        @dragstart="onItemDragStart"
+        @dragend="onItemDragEnd"
+        @dragover.prevent
+        @drop="onItemDrop"
+      >
         <div class="rowContent">
           {{ item }}
         </div>
@@ -227,10 +266,7 @@ const onFolderCrossClick = (event) => {
           class="favoriteFolder"
           :data-folder-index="folderIndex"
         >
-          <div
-            v-if="item.folderName"
-            class="favorite favoriteFolderTitle"
-          >
+          <div v-if="item.folderName" class="favorite favoriteFolderTitle">
             <div class="folderContent" @click="onFolderClick">
               <img :src="item.visible ? downIcon : rightIcon" />
               {{ item.folderName }}
