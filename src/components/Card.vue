@@ -453,8 +453,6 @@ const onFolderCrossClick = (event) => {
 }
 
 .cross.loading {
-  cursor: default;
-
   .crossIcon,
   .crossIcon svg {
     display: none;

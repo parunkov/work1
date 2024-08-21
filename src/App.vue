@@ -22,6 +22,7 @@ const currentIndex = ref(0);
 const addInput = ref(null);
 const draggedIndex = ref(null);
 const isAdiingFolder = ref(false);
+const isCrossPreloaderRun = ref(false);
 
 const updateStorage = () => {
   localStorage.setItem('p1159data', JSON.stringify(data.value));
@@ -153,7 +154,7 @@ const onDragOver = (index) => {
 };
 
 const onDrop = (index) => {
-console.log(index);
+  console.log(index);
 
   if (draggedIndex.value === null) return;
   const draggedItem = data.value[draggedIndex.value];
@@ -171,15 +172,21 @@ const onOverlayClick = ({ target }) => {
   }
 };
 
+let removeTimeout;
 const onCrossClick = (payload) => {
-  setTimeout(() => {
+  isCrossPreloaderRun.value = !isCrossPreloaderRun.value;
+
+  clearTimeout(removeTimeout);
+  removeTimeout = setTimeout(() => {
     if (
-      payload.cardType === 'tile' ||
-      payload.cardType === 'row' ||
-      payload.cardType === 'favorite' ||
-      payload.cardType === 'folder'
+      (payload.cardType === 'tile' ||
+        payload.cardType === 'row' ||
+        payload.cardType === 'favorite' ||
+        payload.cardType === 'folder') &&
+      isCrossPreloaderRun.value
     ) {
       data.value[payload.cardIndex].content.splice(payload.itemIndex, 1);
+      isCrossPreloaderRun.value = false;
       updateStorage();
       sendData();
     }
@@ -191,6 +198,13 @@ const onCrossClick = (payload) => {
       );
     }
   }, 2000);
+
+  if (!isCrossPreloaderRun.value) {
+    document.querySelectorAll('.cross.loading').forEach((item) => {
+      item.classList.remove('loading');
+    });
+    clearTimeout(removeTimeout);
+  }
 };
 
 const onAddFolder = (index) => {
