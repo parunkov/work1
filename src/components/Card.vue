@@ -23,7 +23,7 @@ const emit = defineEmits([
   'dragEnd',
   'crossClick',
   'addFolderLink',
-  'itemDrop'
+  'itemDrop',
 ]);
 
 const dragging = ref(false);
@@ -173,10 +173,11 @@ const onFolderCrossClick = (event) => {
 };
 
 const onItemDragStart = (event) => {
+  const item = event.target.closest('.item');
   const card = event.target.closest('.card');
   cardForItemDragging.value = card;
   const items = [...card.querySelectorAll('.item')];
-  const index = items.findIndex((element) => element === event.target);
+  const index = items.findIndex((element) => element === item);
   itemDraggingIndex.value = index;
   event.dataTransfer.effectAllowed = 'move';
   event.dataTransfer.setData('text/plain', index);
@@ -196,6 +197,8 @@ const onItemDrop = (event) => {
   const cards = [...document.querySelectorAll('.card')];
   const cardIndex = cards.findIndex((element) => element === card);
   const payload = { index, cardIndex, draggingIndex: itemDraggingIndex.value };
+  console.log(payload);
+  
   emit('itemDrop', payload);
 };
 </script>
@@ -214,7 +217,16 @@ const onItemDrop = (event) => {
       v-if="props.type === 'tiles'"
       class="cardContent cardContent_type_tile"
     >
-      <div v-for="item in props.content" :key="item.link" class="tile item">
+      <div
+        v-for="item in props.content"
+        :key="item.link"
+        class="tile item"
+        :draggable="true"
+        @dragstart="onItemDragStart"
+        @dragend="onItemDragEnd"
+        @dragover.prevent
+        @drop="onItemDrop"
+      >
         <img :src="item.icon ? `${HOST}${item.icon}` : iconPatch" />
         <div
           class="cross cross_type_tile"

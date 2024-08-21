@@ -57,7 +57,7 @@ const sendData = () => {
       document.querySelectorAll('.cross.loading').forEach((item) => {
         item.classList.remove('loading');
       });
-      getRequerst();
+      // getRequerst();
     });
 };
 
