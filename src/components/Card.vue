@@ -225,7 +225,7 @@ const onItemDrop = (event) => {
         @dragover.prevent
         @drop="onItemDrop"
       >
-        <img :src="item.icon ? `${HOST}${item.icon}` : iconPatch" />
+        <a :href="item.link"><img :src="item.icon ? `${HOST}${item.icon}` : iconPatch" /></a>
         <div
           class="cross cross_type_tile"
           @click="onCrossClick"
@@ -249,7 +249,7 @@ const onItemDrop = (event) => {
         @drop="onItemDrop"
       >
         <div class="rowContent">
-          {{ item }}
+          <a :href="item" class="link">{{ item }}</a>
         </div>
         <div
           class="cross cross_type_row"
@@ -298,7 +298,7 @@ const onItemDrop = (event) => {
             class="favorite favorite_folder_item"
           >
             <img :src="itemLink.icon ? `${HOST}${itemLink.icon}` : iconPatch" />
-            {{ itemLink.link }}
+            <a :href="itemLink.link" class="link">{{ itemLink.link }}</a>
             <div
               class="cross cross_type_favorite"
               @click="onCrossClick"
@@ -308,7 +308,7 @@ const onItemDrop = (event) => {
         </div>
         <div v-else class="favorite">
           <img :src="item.icon ? `${HOST}${item.icon}` : iconPatch" />
-          <span class="favoriteLink">{{ item.link }}</span>
+          <a :href="item.link" class="link"><span class="favoriteLink">{{ item.link }}</span></a>
           <div
             class="cross cross_type_favorite"
             @click="onCrossClick"
@@ -419,6 +419,11 @@ const onItemDrop = (event) => {
   text-overflow: ellipsis;
 }
 
+.link {
+  text-decoration: none;
+  color: #282828;
+}
+
 .favorite {
   position: relative;
   display: flex;
@@ -448,6 +453,7 @@ const onItemDrop = (event) => {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  color: #ffffff;
 }
 
 .favorite_folder_item {
